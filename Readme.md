@@ -73,7 +73,7 @@ or you can run in debug mode to see all REST interactions in clear text.
 Gerhards-MacBook-Pro:frinxit gwieser$ node-debug frinxit.js 
 ~~~~
 
-##Getting started with frinxit:
+## Getting started with frinxit:
 
 default settings are:
 
