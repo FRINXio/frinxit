@@ -1,0 +1,45 @@
+{
+  "name": "frinxit",
+  "version": "0.1.0",
+  "description": "Northbound CLI tool for OpenDaylight",
+  "main": "frinxit.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FRINXio/frinxit"
+  },
+  "keywords": [
+    "frinxit",
+    "frinxio",
+    "frinx",
+    "l3vpn",
+    "cluster",
+    "jolokia",
+    "opendaylight",
+    "odl",
+    "softwaredefinednetworking",
+    "sdn",
+    "rest",
+    "restconf",
+    "commandline",
+    "cmdline",
+    "cli",
+    "shell",
+    "vorpal",
+    "superagent"
+  ],
+  "author": "FRINX <info@frinx.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FRINXio/frinxit/issues"
+  },
+  "homepage": "https://github.com/FRINXio/frinxit",
+  "dependencies": {
+    "vorpal": ">=1.12.0",
+    "vorpal-less": ">=0.0.13",
+    "vorpal-grep": ">=0.2.0",
+    "superagent": ">=3.5.2"
+  }
+}
