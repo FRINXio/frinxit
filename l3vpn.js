@@ -432,34 +432,34 @@ vorpal
     });
   });
 
-vorpal
-  .command('delete l3vpn site <site_id>')
-  .description('Deletes a site from the VPN. Requires site-id.')
+  vorpal
+    .command('delete l3vpn site <site_id>')
+    .description('Deletes a site from the VPN. Requires site-id.')
 
-  .action(function(args, callback) {
-    var self = this;
-    //var node_id = args.node_id;
-    request
-      .delete('http://' + odl_ip + ':8181/restconf/config/ietf-l3vpn-svc:l3vpn-svc/sites/site/' + args.site_id)
-      .auth(odl_user, odl_pass)
-      .accept('application/json')
-      .set('Content-Type', 'application/json')
+    .action(function(args, callback) {
+      var self = this;
+      //var node_id = args.node_id;
+      request
+        .delete('http://' + odl_ip + ':8181/restconf/config/ietf-l3vpn-svc:l3vpn-svc/sites/site/' + args.site_id)
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/json')
 
-      .end(function (err, res) {
-        if (err || !res.ok) {
-          self.log('Site was not found in the data store. Error code: ' + err.status);
-        } 
+        .end(function (err, res) {
+          if (err || !res.ok) {
+            self.log('Site was not found in the data store. Error code: ' + err.status);
+          } 
 
-        if (res.status == 200) {
-          self.log('Site was successfully deleted from the data store. Status code: ' + res.status);
-        }
+          if (res.status == 200) {
+            self.log('Site was successfully deleted from the data store. Status code: ' + res.status);
+          }
 
-        if (res.text) {
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-        }
+          if (res.text) {
+            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          }
 
-      });
-      callback();
+        });
+        callback();
   });
 
   vorpal
@@ -498,34 +498,34 @@ vorpal
 
     });
 
-vorpal
-  .command('show l3vpn operational')
-  .description('Displays operational data of the L3 VPN service.')
+  vorpal
+    .command('show l3vpn operational')
+    .description('Displays operational data of the L3 VPN service.')
 
-  .action(function(args, callback) {
-    var self = this;
-    request
-      .get('http://' + odl_ip + ':8181/restconf/operational/ietf-l3vpn-svc:configured-l3vpn-svc')
+    .action(function(args, callback) {
+      var self = this;
+      request
+        .get('http://' + odl_ip + ':8181/restconf/operational/ietf-l3vpn-svc:configured-l3vpn-svc')
 
-      .auth(odl_user, odl_pass)
-      .accept('application/json')
-      .set('Content-Type', 'application/json')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/json')
 
-      .end(function (err, res) {
+        .end(function (err, res) {
 
-        if (err || !res.ok) {
-          self.log('Error code: ' + err.status);
-        } 
+          if (err || !res.ok) {
+            self.log('Error code: ' + err.status);
+          } 
 
-        if (res.status == 200) {
-          self.log('Status code: ' + res.status);
-        }
+          if (res.status == 200) {
+            self.log('Status code: ' + res.status);
+          }
 
-        self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
 
-      });
-      callback();
-  });
+        });
+        callback();
+    });
 
 
 }

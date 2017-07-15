@@ -17,6 +17,7 @@ vorpal
   .delimiter('frinxit$')
   .use(require('./l3vpn.js'))
   .use(require('./cluster.js'))
+  .use(require('./southbound_cli.js'))
   .use(less)
   .use(grep)
   .show();
@@ -34,46 +35,6 @@ vorpal
   });
 
 
-vorpal
-  .command('exec cli [node_id]')
-  .description('Execeutes an arbitray CLI command via the CLI plugin associated' + 
-    ' with that device. Response is non-structured.')
-  .hidden()
-
-  .action(function(args, callback) {
-    var self = this;
-    var node_id = '';
-    
-    //hack default settings for options
-    if (typeof args.node_id == 'undefined' ) { node_id = current_delimiter; } 
-      else { node_id = args.node_id; };
-    
-    request
-      .put('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology' +
-        '/topology/topology-netconf/node/' + node_id + '/yang-ext:mount/ios-cli:execute-and-read')
-
-      .auth(odl_user, odl_pass)
-      .accept('application/json')
-      .set('Content-Type', 'application/json')
-
-      .send('{ "input" : { "ios-cli:command" : "sh version"  }}')
-
-      .end(function (err, res) {
-        if (err || !res.ok) {
-          self.log('CLI execution was unsuccessful. Error code: ' + err.status);
-        } 
-
-        if (res.status == 200) {
-          self.log('CLI command was successfully executed on the device. Status code: ' + res.status);
-        }       
-
-        if (res.text) {
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-        }
-
-      });
-      callback();
-  });
 
 vorpal
   .command('delete nc-device <node_id>')
