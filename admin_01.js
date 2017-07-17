@@ -1,9 +1,73 @@
 var request = require('superagent');
-var cli = require('./frinxit.js');
+var admin = require('./frinxit.js');
 
-var odl_ip = cli.odl_ip;
-var odl_user = cli.odl_user;
-var odl_pass = cli.odl_pass;
+var odl_ip = admin.odl_ip;
+var odl_user = admin.odl_user;
+var odl_pass = admin.odl_pass;
+
+
+module.exports = function (vorpal) {
+  vorpal
+    .command('show odl version')
+    .description('Display the version of the FRINX ODL Distribution.')
+    .action(function(args, callback) {
+      var self = this;
+      request
+        .post('http://' + odl_ip + ':8181/restconf/operations/installer:show-version')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/yang.data+json')
+
+        .end(function (err, res) {
+
+          if (err || !res.ok) {
+            self.log('Error code: ' + err.status);
+          } 
+
+          if (res.status == 200) {
+            self.log('Status code: ' + res.status);
+          }
+
+          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+        });
+        callback();
+    });
+
+  vorpal
+    .command('show odl features')
+    .description('Display features installed in FRINX ODL Distribution.')
+    .action(function(args, callback) {
+      var self = this;
+      request
+        .get('http://' + odl_ip + ':8181/restconf/operational/installer:features')
+        .auth(odl_user, odl_pass)
+        //.accept('application/json, text/plain ,*/*')
+        //.set('Content-Type', 'application/yang.data+json')
+
+        .end(function (err, res) {
+
+          if (err || !res.ok) {
+            self.log('Error code: ' + err.status);
+          } 
+
+          if (res.status == 200) {
+            self.log('Status code: ' + res.status);
+          }
+
+          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          //self.log(res.text);
+
+        });
+        callback();
+    });    
+
+}
+
+
+/*
+//curl 'http://localhost:8181/restconf/operational/installer:features' -H 'Host: localhost:8181' -H 'Accept: application/json, text/plain, *'/*' -H 'Accept-Language: en-US,en;q=0.5' -H 'Authorization: Basic YWRtaW46YWRtaW4='
+
 
 
 module.exports = function (vorpal) {
@@ -422,3 +486,5 @@ vorpal
   });
 
 }
+
+*/

@@ -18,6 +18,7 @@ vorpal
   .use(require('./l3vpn.js'))
   .use(require('./cluster.js'))
   .use(require('./southbound_cli.js'))
+  .use(require('./admin_01.js'))
   .use(less)
   .use(grep)
   .show();
