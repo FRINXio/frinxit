@@ -60,8 +60,35 @@ module.exports = function (vorpal) {
 
         });
         callback();
-    });    
+    });   
 
+  vorpal
+    .command('show odl monitor-resources')
+    .description('Display resource information about the ODL host.')
+    .action(function(args, callback) {
+      var self = this;
+      request
+        .post('http://' + odl_ip + ':8181/restconf/operations/installer:monitor-resources')
+        .auth(odl_user, odl_pass)
+        //.accept('application/json, text/plain ,*/*')
+        //.set('Content-Type', 'application/yang.data+json')
+
+        .end(function (err, res) {
+
+          if (err || !res.ok) {
+            self.log('Error code: ' + err.status);
+          } 
+
+          if (res.status == 200) {
+            self.log('Status code: ' + res.status);
+          }
+
+          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          //self.log(res.text);
+
+        });
+        callback();
+    });  
 }
 
 
