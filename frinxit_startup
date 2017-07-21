@@ -1,0 +1,3 @@
+cat ./welcome_banner.txt
+node ./frinxit.js
+

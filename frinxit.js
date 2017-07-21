@@ -19,6 +19,7 @@ vorpal
   .use(require('./cluster.js'))
   .use(require('./southbound_cli.js'))
   .use(require('./admin_01.js'))
+  .use(require('./tour_admin_01.js'))
   .use(less)
   .use(grep)
   .show();

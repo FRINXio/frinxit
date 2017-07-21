@@ -1,0 +1,13 @@
+***********************************************************************
+Welcome to frinxit the command line tool for the FRINX ODL Distribution
+
+type "tour l3vpn" to explore L3VPN features
+type "tour l2vpn" to explore L2VPN features
+type "tour cli" to explore our CLI southbound plugin
+type "tour admin" to explore FRINX ODL admin commands
+
+or
+
+type "help" to explore CLI commands
+***********************************************************************
+
