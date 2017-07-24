@@ -13,6 +13,40 @@ exports.odl_ip = odl_ip;
 exports.odl_user = odl_user;
 exports.odl_pass = odl_pass;
 
+
+const welcome_banner = "************************************************************************\n\
+Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
+\n\
+type \"tour admin\" to explore FRINX ODL admin commands\n\
+coming soon: \"tour l3vpn\" to explore L3VPN features\n\
+coming soon: \"tour l2vpn\" to explore L2VPN features\n\
+coming soon: \"tour cli\" to explore our CLI southbound plugin\n\
+\n\
+or\n\
+\n\
+type \"help\" to explore CLI commands\n\
+\n\
+     +-------------+\n\
+     |   FRINXIT   |\n\
+     +------+------+       +-------------+\n\
+            |              | IOS classic |\n\
+     +------:------+       |     R1      |\n\
+     |   ODL Host  +=======> 192.168.0.4 |\n\
++----+             |       +------+------+\n\
+|    +------+------+              |\n\
+|           |                     |\n\
+|    +------v------+       +------+------+       +-------------+\n\
+|    |  IOS XRv    |       | IOS classic |       |    IOS XRv  |\n\
+|    |    PE1      +=======+     P1      +=======+     PE2     |\n\
+|    | 192.168.0.1 |       | 192.168.0.2 |       | 192.168.0.3 |\n\
+|    +-------------+       +------^------+       +-------^-----+\n\
+|                                 |                      |\n\
++---------------------------------+----------------------+\n\
+\n\
+************************************************************************";
+
+console.log(welcome_banner);
+
 vorpal
   .delimiter('frinxit$')
   .use(require('./l3vpn.js'))
