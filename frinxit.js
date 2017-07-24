@@ -26,16 +26,34 @@ vorpal
 
 
 vorpal
-  .command('connect <node_name>')
-  .description('Connects to netconf node.')
-  .hidden()
-  .alias('con')
+  .command('test odl connectivity', 'Tests connectivity to host and port 8181. \
+  You need to be logged on to an ODL node for the test to succeed. Also see \
+  command "logon"')
+
   .action(function(args, callback) {
-      current_delimiter = args.node_name;
-      this.delimiter('<' + current_delimiter + '>$');
+    var self = this;
+
+    // check if an env variable is set
+    if (process.env.odl_target){    
+      var odl_target = process.env.odl_target;
+      self.log('odl_target = ' + odl_target);
+    }
+
+
+    request
+      .get('http://' + odl_ip + ':8181/restconf/modules')
+      .auth(odl_user, odl_pass)
+      .accept('application/json')
+      .set('Content-Type', 'application/json')
+      .end(function (err, res) {
+         if (err || !res.ok) {
+               self.log('Can not connect to host or port');
+             } else {
+               self.log('We have connectivity!');
+             }
+      });
     callback();
   });
-
 
 
 vorpal
@@ -218,107 +236,7 @@ vorpal
   });
 
 
-vorpal
-  .command('show yang models', 'Retrieve all YANG models in connected ODL node')
-  .option('-p, --prettyprint', 'Prettyprints json text.')
 
-  .action(function(args, callback) {
-    var self = this;
-    request
-      .get('http://' + odl_ip + ':8181/restconf/modules')
-
-      .auth(odl_user, odl_pass)
-      .accept('application/json')
-      .set('Content-Type', 'application/json')
-      .end(function (err, res) {
-
-        if (err || !res.ok) {
-          self.log('Mount attempt was unsuccessful. Error code: ' + err.status);
-        } 
-
-        if (res.status == 200) {
-          self.log('Device was successfully mmodified or overwritten in the data store. Status code: ' + res.status);
-        }       
-
-        if (res.status == 201) {
-          self.log('Device was successfully created and mounted in the data store. Status code: ' + res.status);
-        }
-
-        if (res.text) {
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-        }
-
-      });
-      callback();
-  });
-
-
-
-vorpal
-  .command('test odl connectivity', 'Tests connectivity to host and port 8181. \
-  You need to be logged on to an ODL node for the test to succeed. Also see \
-  command "logon"')
-
-  .action(function(args, callback) {
-    var self = this;
-    request
-      .get('http://' + odl_ip + ':8181/restconf/modules')
-      .auth(odl_user, odl_pass)
-      .accept('application/json')
-      .set('Content-Type', 'application/json')
-      .end(function (err, res) {
-         if (err || !res.ok) {
-               self.log('Can not connect to host or port');
-             } else {
-               self.log('We have connectivity!');
-             }
-      });
-    callback();
-  });
-
-
-vorpal
-  .command('logon <node_name>')
-  .description('Connects to an ODL node.')
-  .alias('log')
-  .action(function(args, callback) {
-      var self = this;
-      this.log('Connecting to ' + args.node_name);
-      current_delimiter = args.node_name;
-      odl_ip = args.node_name;
-      this.delimiter('<' + current_delimiter + '>$');
-      this.prompt([
-        {
-          type: 'input',
-          name: 'username',
-          message: 'Username: '
-        },
-        {
-          type: 'password',
-          name: 'password',
-          message: 'Password: '
-        }
-        ], function (answers) {
-          if (answers.username) {
-            odl_user = answers.username;
-            odl_pass = answers.password;
-          }
-        callback();
-      });
-  });
-
-vorpal
-  .command('logoff')
-  .description('Discconnects from an ODL node.')
-  .alias('logo')
-  .action(function(args, callback) {
-    odl_ip = '';
-    odl_user = '';
-    odl_pass = '';
-    current_delimiter = 'frinxit';
-    vorpal.delimiter('frinxit$').show();
-    callback();
-  });
 
 
 

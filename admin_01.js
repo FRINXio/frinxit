@@ -30,7 +30,7 @@ module.exports = function (vorpal) {
 
           var version = JSON.parse(res.text);
 
-          self.log(JSON.stringify(version.output.versions, null, 2));
+          self.log(JSON.stringify(version.output, null, 2));
 
         });
         callback();
@@ -116,6 +116,87 @@ module.exports = function (vorpal) {
         });
         callback();
     });  
+
+
+
+vorpal
+  .command('show odl yang-models', 'Retrieve all YANG models in connected ODL node')
+
+  .action(function(args, callback) {
+    var self = this;
+    request
+      .get('http://' + odl_ip + ':8181/restconf/modules')
+
+      .auth(odl_user, odl_pass)
+      .accept('application/json')
+      .set('Content-Type', 'application/json')
+      .end(function (err, res) {
+
+        if (err || !res.ok) {
+          self.log('Mount attempt was unsuccessful. Error code: ' + err.status);
+        } 
+
+        if (res.status == 200) {
+          self.log('Device was successfully mmodified or overwritten in the data store. Status code: ' + res.status);
+        }       
+
+        if (res.status == 201) {
+          self.log('Device was successfully created and mounted in the data store. Status code: ' + res.status);
+        }
+
+        if (res.text) {
+          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+        }
+
+      });
+      callback();
+  });
+
+
+
+vorpal
+  .command('logon <node_name>')
+  .description('Connects to an ODL node.')
+  .alias('log')
+  .action(function(args, callback) {
+      var self = this;
+      this.log('Connecting to ' + args.node_name);
+      current_delimiter = args.node_name;
+      odl_ip = args.node_name;
+      this.delimiter('<' + current_delimiter + '>$');
+      this.prompt([
+        {
+          type: 'input',
+          name: 'username',
+          message: 'Username: '
+        },
+        {
+          type: 'password',
+          name: 'password',
+          message: 'Password: '
+        }
+        ], function (answers) {
+          if (answers.username) {
+            odl_user = answers.username;
+            odl_pass = answers.password;
+          }
+        callback();
+      });
+  });
+
+vorpal
+  .command('logoff')
+  .description('Discconnects from an ODL node.')
+  .alias('logo')
+  .action(function(args, callback) {
+    odl_ip = '';
+    odl_user = '';
+    odl_pass = '';
+    current_delimiter = 'frinxit';
+    vorpal.delimiter('frinxit$').show();
+    callback();
+  });
+
 }
 
 

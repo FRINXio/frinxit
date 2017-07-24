@@ -1,13 +1,31 @@
-***********************************************************************
-Welcome to frinxit the command line tool for the FRINX ODL Distribution
+************************************************************************
+Welcome to frinxit, the command line tool for the FRINX ODL Distribution
 
-type "tour l3vpn" to explore L3VPN features
-type "tour l2vpn" to explore L2VPN features
-type "tour cli" to explore our CLI southbound plugin
 type "tour admin" to explore FRINX ODL admin commands
+coming soon: "tour l3vpn" to explore L3VPN features
+coming soon: "tour l2vpn" to explore L2VPN features
+coming soon: "tour cli" to explore our CLI southbound plugin
 
 or
 
 type "help" to explore CLI commands
-***********************************************************************
+
+     +-------------+
+     |   FRINXIT   |
+     +------+------+       +-------------+
+            |              | IOS classic |
+     +------v------+       |     R1      |
+     |   ODL Host  +=======> 192.168.0.4 |
++----+             |       +------+------+
+|    +------+------+              |
+|           |                     |
+|    +------v------+       +------+------+       +-------------+
+|    |  IOS XRv    |       | IOS classic |       |    IOS XRv  |
+|    |    PE1      +=======+     P1      +=======+     PE2     |
+|    | 192.168.0.1 |       | 192.168.0.2 |       | 192.168.0.3 |
+|    +-------------+       +------^------+       +-------^-----+
+|                                 |                      |
++---------------------------------+----------------------+
+
+************************************************************************
 
