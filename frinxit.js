@@ -45,6 +45,11 @@ type \"help\" to explore CLI commands\n\
 \n\
 ************************************************************************";
 
+if (process.env.odl_target){    
+  odl_ip = process.env.odl_target;
+  self.log('odl_ip = ' + odl_ip);
+}
+
 console.log(welcome_banner);
 
 vorpal

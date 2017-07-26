@@ -133,15 +133,15 @@ vorpal
       .end(function (err, res) {
 
         if (err || !res.ok) {
-          self.log('Mount attempt was unsuccessful. Error code: ' + err.status);
+          self.log('Show command was unsuccessful. Error code: ' + err.status);
         } 
 
         if (res.status == 200) {
-          self.log('Device was successfully mmodified or overwritten in the data store. Status code: ' + res.status);
+          self.log('Success. Status code: ' + res.status);
         }       
 
         if (res.status == 201) {
-          self.log('Device was successfully created and mounted in the data store. Status code: ' + res.status);
+          self.log('Status code: ' + res.status);
         }
 
         if (res.text) {
