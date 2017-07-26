@@ -320,7 +320,36 @@ vorpal
       callback();
   });
 
+  vorpal
+    .command('show odl version')
+    .description('Display the version of the FRINX ODL Distribution.')
+    .action(function(args, callback) {
+      var self = this;
+      request
+        .post('http://' + odl_ip + ':8181/restconf/operations/installer:show-version')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/yang.data+json')
 
+        .end(function (err, res) {
+
+          if (err || !res.ok) {
+            self.log('Error code: ' + err.status);
+          } 
+
+          if (res.status == 200) {
+            self.log('Status code: ' + res.status);
+          }
+
+          var version = JSON.parse(res.text);
+
+          self.log(JSON.stringify(version.output, null, 2));
+
+          self.log(res.req);
+
+        });
+        callback();
+    });
 
 // remove the built-in vorpal exit command so we can define it for our 
 // purposes. When in a context leave that context, when at the top level
