@@ -21,7 +21,6 @@ if (process.env.odl_target){
 exports.odl_ip = odl_ip;
 exports.odl_user = odl_user;
 exports.odl_pass = odl_pass;
-exports.welcome_banner = welcome_banner;
 
 const welcome_banner = "************************************************************************\n\
 Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
@@ -51,6 +50,8 @@ coming soon: \"tour l3vpn\" to explore L3VPN service provisioning features\n\
 +-------------+       +-------------+       +-------------+\n\
 \n\
 ************************************************************************";
+
+exports.welcome_banner = welcome_banner;
 
 console.log(welcome_banner);
 
