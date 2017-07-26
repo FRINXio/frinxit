@@ -5,6 +5,7 @@ const vorpalTour = require('vorpal-tour');
 var odl_ip = admin.odl_ip;
 var odl_user = admin.odl_user;
 var odl_pass = admin.odl_pass;
+var welcome_banner = admin.welcome_banner;
 
 
 module.exports = function (vorpal) {
@@ -12,8 +13,9 @@ module.exports = function (vorpal) {
     command: 'tour admin',
     tour: function(tour) {
       // Colors the "tour guide" text. 
-      tour.color('cyan');
 
+      tour.color('cyan');
+/*
       // Adds a step to the tour:
       // .begin spits user instructions when the step starts
       // .expect listens for an event. The function it calls 
@@ -62,6 +64,7 @@ module.exports = function (vorpal) {
         .wait(500)
         .end('\nWho would have thunk?\n');
 
+*/
       tour.step(5)
         .begin('The next command shows you which YANG models are available in ODL. Type "show odl yang-models".')
         .expect("command", function (data, cb) {
@@ -73,7 +76,9 @@ module.exports = function (vorpal) {
 
 
       // Ends the tour, spits text to the user.
-      tour.end('This is it for now. Very well done! If you feel adventurous you can type \"show odl yang-models | grep ietf\" and see what happens.');
+      tour.end('This is it for now. Very well done! If you feel adventurous you can type \"show odl yang-models | grep ietf\" and see what happens.\n\n\
+Type "banner" to see the welcome banner and the topology again.');
+
 
       return tour;
     }

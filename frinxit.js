@@ -9,10 +9,10 @@ var odl_ip = '127.0.0.1';
 var odl_user = "admin";
 var odl_pass = "admin";
 
-// FRINXIT will read an environmnent variable "odl_target" and if it is set 
-// it will use that IP address as a default host address for all REST calls
-// If the env variable does not exist we will use 127.0.0.1 as default. 
-// The user can change teh host address at any time by using teh "logon odl" command.
+// FRINXIT will read an environmnent variable "odl_target" from its host and if it is set 
+// it will use that IP address as a default host address for all REST calls towards ODL.
+// If the env variable does not exist, we will use 127.0.0.1 as default. 
+// The user can change the host address at any time by using the "logon odl" command.
 
 if (process.env.odl_target){    
   odl_ip = process.env.odl_target;
@@ -22,17 +22,15 @@ exports.odl_ip = odl_ip;
 exports.odl_user = odl_user;
 exports.odl_pass = odl_pass;
 
-
 const welcome_banner = "************************************************************************\n\
 Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
 \n\
 type \"tour admin\" to explore FRINX ODL admin commands\n\
-coming soon: \"tour l3vpn\" to explore L3VPN service provisioning features\n\
-coming soon: \"tour cli\" to explore our CLI southbound plugin\n\
-\n\
-or\n\
-\n\
+type \"tour cli\" to explore the CLI service module\n\
 type \"help\" to explore CLI commands\n\
+\n\
+\n\
+coming soon: \"tour l3vpn\" to explore L3VPN service provisioning features\n\
 \n\
                      +---------------+\n\
                      |  FRINXIT CLI  |\n\
@@ -49,7 +47,7 @@ type \"help\" to explore CLI commands\n\
 |  IOS XRv    |       | IOS classic |       |    IOS XRv  |\n\
 |    PE1      +-------+     P1      +-------+     PE2     |\n\
 |192.168.1.111|       |192.168.1.121|       |192.168.1.112|\n\
-+-------------+       +------^------+       +-------^-----+\n\
++-------------+       +-------------+       +-------------+\n\
 \n\
 ************************************************************************";
 
@@ -62,10 +60,10 @@ vorpal
   .use(require('./southbound_cli.js'))
   .use(require('./admin_01.js'))
   .use(require('./tour_admin_01.js'))
+  .use(require('./tour_cli_01.js'))
   .use(less)
   .use(grep)
   .show();
-
 
 vorpal
   .command('logon <node_name>')
@@ -144,7 +142,7 @@ vorpal
 
 vorpal
   .command('banner')
-  .description('Displays the welcome banner again.')
+  .description('Displays the welcome banner (incl. topology diagram) again.')
   .alias('welcome')
   .action(function(args, callback) {
     var self = this;
@@ -362,10 +360,5 @@ vorpal
         callback();
         }
 	});
-
-
-
-//  restconf/config/ietf-l3vpn-svc:l3vpn-svc/vpn-services/vpn-service/T24T_vpn1
-
 
 
