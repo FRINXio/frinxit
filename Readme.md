@@ -12,6 +12,7 @@ use npm to install the following packages
 * vorpal
 * vorpal-less
 * vorpal-grep
+* vorpal-tour
 
 this should look similar to the following output:
 
