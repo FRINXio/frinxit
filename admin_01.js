@@ -32,6 +32,8 @@ module.exports = function (vorpal) {
 
           self.log(JSON.stringify(version.output, null, 2));
 
+          self.log(res.req);
+
         });
         callback();
     });

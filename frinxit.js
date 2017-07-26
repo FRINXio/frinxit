@@ -288,7 +288,7 @@ vorpal
   });
 
 vorpal
-  .command('show topologies')
+  .command('show odl topologies')
   .description('Displays ODL topology information.')
 
   .action(function(args, callback) {
@@ -313,6 +313,8 @@ vorpal
         }
 
         self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+        self.log(res.req);
 
       });
       callback();
