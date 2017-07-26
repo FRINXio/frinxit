@@ -365,7 +365,7 @@ vorpal
         } 
 
         if (res.status == 200) {
-          self.log('Device was successfully deleted from the device. Status code: ' + res.status);
+          self.log('VRF was successfully deleted from the device. Status code: ' + res.status);
         }
 
         if (res.text) {

@@ -21,6 +21,7 @@ if (process.env.odl_target){
 exports.odl_ip = odl_ip;
 exports.odl_user = odl_user;
 exports.odl_pass = odl_pass;
+exports.welcome_banner = welcome_banner;
 
 const welcome_banner = "************************************************************************\n\
 Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\

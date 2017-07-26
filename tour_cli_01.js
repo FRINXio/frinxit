@@ -108,8 +108,8 @@ are supported by each CLI device.\n');
 
       tour.step(6)
         .begin('How about we get some real work done now? The reason why we went thru all this hassle up to this point, is to present a \
-abstract, model-based network device and service interface\
-to applications and users. In the next example you see how we are parsing the CLI output of an IOS command and return\
+abstract, model-based network device and service interface \
+to applications and users. In the next example you see how we are parsing the CLI output of an IOS command and return \
 structured data. Please type:\
           \n\n"exec cli show version R121"\n\n')
         .expect("command", function (data, cb) {
@@ -184,19 +184,19 @@ This command creates a vrf named "bambi" on node "R121" and adds a description "
 
       tour.step(11)
         .begin('Finally, here is a way to execute any arbitrary command on a mounted CLI device. Please type:\
-          \n\n"exec cli command R121"\n\nYou will be presented with a command prompt "command:". Now type: "show running-config" and press enter.')
+          \n\n"exec cli command R121"\n\nYou will be presented with a command prompt "command:". Once you see the prompt type: "show running-config" and press enter.')
         .expect("command", function (data, cb) {
           cb(data.command === 'exec cli command R121');
         })
         .reject('Uh.. Let\'s type "exec cli command R121" instead..')
         .wait(3000)
-        .end('\nYou see the IOS output from the command that was executed on node R121. You can also use "grep" to further specify the output\
+        .end('\nYou see the IOS output from the command that was executed on node R121. You can also use "grep" to further specify the output \
 Try: "exec cli command R121 | grep hostname" and then enter the command you want to execute on the CLI device, e.g. "Show running-config".\n');
 
 // exec cli show vrfs R121
 
       // Ends the tour, spits text to the user.
-      tour.end('This is it for now. Very well done!');
+      tour.end('This is it for now. Very well done! Type "banner" to see the welcome message, including the lab topology diagram again.');
 
       return tour;
     }
