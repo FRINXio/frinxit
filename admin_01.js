@@ -154,49 +154,6 @@ vorpal
 
 
 
-vorpal
-  .command('logon <node_name>')
-  .description('Connects to an ODL node.')
-  .alias('log')
-  .action(function(args, callback) {
-      var self = this;
-      this.log('Connecting to ' + args.node_name);
-      current_delimiter = args.node_name;
-      odl_ip = args.node_name;
-      this.delimiter('<' + current_delimiter + '>$');
-      this.prompt([
-        {
-          type: 'input',
-          name: 'username',
-          message: 'Username: '
-        },
-        {
-          type: 'password',
-          name: 'password',
-          message: 'Password: '
-        }
-        ], function (answers) {
-          if (answers.username) {
-            odl_user = answers.username;
-            odl_pass = answers.password;
-          }
-        callback();
-      });
-  });
-
-vorpal
-  .command('logoff')
-  .description('Discconnects from an ODL node.')
-  .alias('logo')
-  .action(function(args, callback) {
-    odl_ip = '';
-    odl_user = '';
-    odl_pass = '';
-    current_delimiter = 'frinxit';
-    vorpal.delimiter('frinxit$').show();
-    callback();
-  });
-
 }
 
 
