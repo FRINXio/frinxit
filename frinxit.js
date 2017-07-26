@@ -9,6 +9,11 @@ var odl_ip = '127.0.0.1';
 var odl_user = "admin";
 var odl_pass = "admin";
 
+// FRINXIT will read an environmnent variable "odl_target" and if it is set 
+// it will use that IP address as a default host address for all REST calls
+// If the env variable does not exist we will use 127.0.0.1 as default. 
+// The user can change teh host address at any time by using teh "logon odl" command.
+
 if (process.env.odl_target){    
   odl_ip = process.env.odl_target;
   console.log('odl_ip = ' + odl_ip)};
@@ -22,30 +27,29 @@ const welcome_banner = "********************************************************
 Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
 \n\
 type \"tour admin\" to explore FRINX ODL admin commands\n\
-coming soon: \"tour l3vpn\" to explore L3VPN features\n\
-coming soon: \"tour l2vpn\" to explore L2VPN features\n\
+coming soon: \"tour l3vpn\" to explore L3VPN service provisioning features\n\
 coming soon: \"tour cli\" to explore our CLI southbound plugin\n\
 \n\
 or\n\
 \n\
 type \"help\" to explore CLI commands\n\
 \n\
-     +-------------+\n\
-     |   FRINXIT   |\n\
-     +------+------+       +-------------+\n\
-            |              | IOS classic |\n\
-     +------:------+       |     R1      |\n\
-     |   ODL Host  +=======>192.168.1.122|\n\
-+----+             |       +------+------+\n\
-|    +------+------+ \n\
-|           |\n\
-|    +------v------+       +------+------+       +-------------+\n\
-|    |  IOS XRv    |       | IOS classic |       |    IOS XRv  |\n\
-|    |    PE1      +=======+     P1      +=======+     PE2     |\n\
-|    |192.168.1.111|       |192.168.1.121|       |192.168.1.112|\n\
-|    +-------------+       +------^------+       +-------^-----+\n\
-|                                 |                      |\n\
-+---------------------------------+----------------------+\n\
+                     +---------------+\n\
+                     |  FRINXIT CLI  |\n\
+                     +-------+-------+\n\
+                             |              +-------------+\n\
+                     +-------v-------+      | IOS classic |\n\
+                     |   FRINX ODL   |      |     R1      |\n\
+                     |               +------>192.168.1.122|\n\
+                     +-------+-------+      +-------------+\n\
+                             |\n\
+       +-------------------------------------------+\n\
+       |                     |                     |\n\
++------v------+       +------v------+       +------v------+\n\
+|  IOS XRv    |       | IOS classic |       |    IOS XRv  |\n\
+|    PE1      +-------+     P1      +-------+     PE2     |\n\
+|192.168.1.111|       |192.168.1.121|       |192.168.1.112|\n\
++-------------+       +------^------+       +-------^-----+\n\
 \n\
 ************************************************************************";
 
@@ -122,7 +126,6 @@ vorpal
       self.log('odl_target = ' + odl_target);
     }
 
-
     request
       .get('http://' + odl_ip + ':8181/restconf/modules')
       .auth(odl_user, odl_pass)
@@ -135,6 +138,17 @@ vorpal
                self.log('We have connectivity!');
              }
       });
+    callback();
+  });
+
+
+vorpal
+  .command('banner')
+  .description('Displays the welcome banner again.')
+  .alias('welcome')
+  .action(function(args, callback) {
+    var self = this;
+    self.log(welcome_banner);
     callback();
   });
 
