@@ -15,7 +15,7 @@ module.exports = function (vorpal) {
       // Colors the "tour guide" text. 
 
       tour.color('cyan');
-/*
+
       // Adds a step to the tour:
       // .begin spits user instructions when the step starts
       // .expect listens for an event. The function it calls 
@@ -64,7 +64,6 @@ module.exports = function (vorpal) {
         .wait(500)
         .end('\nWho would have thunk?\n');
 
-*/
       tour.step(5)
         .begin('The next command shows you which YANG models are available in ODL. Type "show odl yang-models".')
         .expect("command", function (data, cb) {

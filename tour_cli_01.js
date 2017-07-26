@@ -64,7 +64,7 @@ to port 22 and telnet to port 23.')
       tour.wait(3000);
 
       tour.step(3)
-        .begin('You probably have asked yourself how to find out that the device type is "ios". By looking into the translate registry, \
+        .begin('You might have asked yourself how to find out that the device type is "ios". By looking into the translate registry, \
 you can find out which device types are supported by FRINX ODL. Additional device types can be loaded at runtime, we will look at that at a later point.\
 To see the supported device types, type:\n\n"show cli translate-registry"\n\n')
         .expect("command", function (data, cb) {
