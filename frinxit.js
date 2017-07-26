@@ -9,6 +9,10 @@ var odl_ip = '127.0.0.1';
 var odl_user = "admin";
 var odl_pass = "admin";
 
+if (process.env.odl_target){    
+  odl_ip = process.env.odl_target;
+  console.log('odl_ip = ' + odl_ip)};
+
 exports.odl_ip = odl_ip;
 exports.odl_user = odl_user;
 exports.odl_pass = odl_pass;
@@ -44,11 +48,6 @@ type \"help\" to explore CLI commands\n\
 +---------------------------------+----------------------+\n\
 \n\
 ************************************************************************";
-
-if (process.env.odl_target){    
-  odl_ip = process.env.odl_target;
-  console.log('odl_ip = ' + odl_ip);
-}
 
 console.log(welcome_banner);
 
@@ -318,9 +317,6 @@ vorpal
       });
       callback();
   });
-
-
-
 
 
 
