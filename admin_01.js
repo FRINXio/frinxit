@@ -42,7 +42,7 @@ module.exports = function (vorpal) {
   vorpal
     .command('show odl features')
     .description('Display features installed in FRINX ODL Distribution.')
-    .option('-i, --installed', 'Only display installed features.')
+    .option('-i, --installed', 'Displays only installed features.')
     .action(function(args, callback) {
       var self = this;
       var installed = false;
@@ -70,11 +70,11 @@ module.exports = function (vorpal) {
           var features_list = [];
 
           for (var i = 0; i < features['features']['features-list'].length; i++) {
-
+            
             var feature_key = features['features']['features-list'][i];
-
-            features_list.push(feature_key['feature-key']);
-
+            if (feature_key['feature']['installed']) {
+              features_list.push(feature_key['feature-key']);
+            }
           }
           
           features_list.sort();

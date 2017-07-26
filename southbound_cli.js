@@ -412,7 +412,8 @@ vorpal
             }       
 
             if (res.text) {
-              self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+              var output = JSON.parse(res.text);
+              self.log(output['output']['output']);
             }
           });
 
