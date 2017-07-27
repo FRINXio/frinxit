@@ -38,9 +38,9 @@ But first things first. We need to mount the CLI devices that we want to control
 "R121" and with the ip address 192.168.0.121. The default mount transport protocol is ssh if no options are specified. We also specify \
 the username and password, both "cisco" in this example. Finally, we let FRINX ODL know that this device type is a classic IOS device by specifying "ios".')
         .expect("command", function (data, cb) {
-          cb(data.command === 'mount cli R121 192.168.0.121 cisco cisco ios');
+          cb(data.command === 'mount cli R121 192.168.1.121 cisco cisco ios');
         })
-        .reject('Uh.. Let\'s type "mount cli R121 192.168.0.121 cisco cisco ios" instead..')
+        .reject('Uh.. Let\'s type "mount cli R121 192.168.1.121 cisco cisco ios" instead..')
         .wait(500)
         .end('\nNice! We have now successfully mounted our first CLI device.\n');
 
@@ -54,9 +54,9 @@ the username and password, both "cisco" in this example. Finally, we let FRINX O
 You can also specify the port number with the "-p portnumber" option. If you don\'t specify any portnumbers then ssh transport defaults\
 to port 22 and telnet to port 23.')
         .expect("command", function (data, cb) {
-          cb(data.command === 'mount cli -t R122 192.168.0.122 cisco cisco ios');
+          cb(data.command === 'mount cli -t R122 192.168.1.122 cisco cisco ios');
         })
-        .reject('Uh.. Let\'s type "mount cli -t R122 192.168.0.122 cisco cisco ios" instead..')
+        .reject('Uh.. Let\'s type "mount cli -t R122 192.168.1.122 cisco cisco ios" instead..')
         .wait(500)
         .end('\nNow we have two devices mounted, one via ssh and one via telnet.\n');
 
@@ -72,7 +72,7 @@ To see the supported device types, type:\n\n"show cli translate-registry"\n\n')
         })
         .reject('Uh.. Let\'s type "show cli translate-registry" instead..')
         .wait(500)
-        .end('\nYou can also use "show cli translate-registry | grep device-type for an abbreviated output.\n');
+        .end('\nYou can also use "show cli translate-registry | grep device-type" for an abbreviated output.\n');
 
       // A delay in millis between steps.
       tour.wait(3000);
