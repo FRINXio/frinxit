@@ -34,8 +34,8 @@ The CLI service module uses YANG models and implements a translation logic to se
 This allows applications to use a service model or unified device model to communicate with a broad range \
 of network platforms and SW revisions from different vendors. \n\
 But first things first. We need to mount the CLI devices that we want to control. Please type or copy/paste the text between quotation marks: \
-          \n\n"mount cli R121 192.168.0.121 cisco cisco ios" \n\nThis will tell FRINX ODL that it should mount a cli device with the name \
-"R121" and with the ip address 192.168.0.121. The default mount transport protocol is ssh if no options are specified. We also specify \
+          \n\n"mount cli R121 192.168.1.121 cisco cisco ios" \n\nThis will tell FRINX ODL that it should mount a cli device with the name \
+"R121" and with the ip address 192.168.1.121. The default mount transport protocol is ssh if no options are specified. We also specify \
 the username and password, both "cisco" in this example. Finally, we let FRINX ODL know that this device type is a classic IOS device by specifying "ios".')
         .expect("command", function (data, cb) {
           cb(data.command === 'mount cli R121 192.168.1.121 cisco cisco ios');
@@ -50,7 +50,7 @@ the username and password, both "cisco" in this example. Finally, we let FRINX O
 
       tour.step(2)
         .begin('Let\'s mount another CLI device while we are at it. This time we will not use ssh, but we will use telnet. Please type:\
-          \n\n"mount cli -t R122 192.168.0.122 cisco cisco ios"\n\nThe "-t" switch tells FRINX ODL to use telnet instead of ssh transport. \
+          \n\n"mount cli -t R122 192.168.1.122 cisco cisco ios"\n\nThe "-t" switch tells FRINX ODL to use telnet instead of ssh transport. \
 You can also specify the port number with the "-p portnumber" option. If you don\'t specify any portnumbers then ssh transport defaults\
 to port 22 and telnet to port 23.')
         .expect("command", function (data, cb) {
