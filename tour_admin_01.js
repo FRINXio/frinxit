@@ -32,7 +32,7 @@ module.exports = function (vorpal) {
         })
         .reject('Uh.. Let\'s type "show odl version" instead..')
         .wait(500)
-        .end('\nNice! Wasn\'t that command just amazing?\n');
+        .end('\nNice! \n');
 
       // A delay in millis between steps.
       tour.wait(1000);
@@ -53,7 +53,7 @@ module.exports = function (vorpal) {
         })
         .reject('Uh.. Let\'s type "show odl features -i" instead..')
         .wait(500)
-        .end('\nNice! Completely unexpected, right?\n');
+        .end('\nNice! \n');
 
       tour.step(4)
         .begin('If you want to see the resource usage of your ODL host. Type "show odl monitor-resources".')
@@ -62,7 +62,7 @@ module.exports = function (vorpal) {
         })
         .reject('Uh.. Let\'s type "show odl monitor-resources" instead..')
         .wait(500)
-        .end('\nWho would have thunk?\n');
+        .end('\n');
 
       tour.step(5)
         .begin('The next command shows you which YANG models are available in ODL. Type "show odl yang-models".')
