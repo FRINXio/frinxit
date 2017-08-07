@@ -79,7 +79,7 @@ To see the supported device types, type:\n\n"show cli translate-registry"\n\n')
 
       tour.step(4)
         .begin('Let\'s check out the config data store to see what we have configured so far. Please type:\
-          \n\n"show cli topology config"\n\nA lot of things in ODL are called "topology", think of a topology in this context as a\
+          \n\n"show cli topology config"\n\nA lot of things in ODL are called "topology", think of a topology in this context as a \
 place for all things related to a domain or feature. There is a topology for L3VPN and a topology for CLI devices and so forth. You\'ll get the hang of it.')
         .expect("command", function (data, cb) {
           cb(data.command === 'show cli topology config');
@@ -107,9 +107,9 @@ are supported by each CLI device.\n');
       tour.wait(7000);
 
       tour.step(6)
-        .begin('How about we get some real work done now? The reason why we went thru all this hassle up to this point, is to present a \
+        .begin('How about we get some real work done now? The reason why we went through all this hassle up to this point, is to present an \
 abstract, model-based network device and service interface \
-to applications and users. In the next example you see how we are parsing the CLI output of an IOS command and return \
+to applications and users. In the next example you see how we parse the CLI output of an IOS command and return \
 structured data. Please type:\
           \n\n"exec cli show version R121"\n\n')
         .expect("command", function (data, cb) {
@@ -119,7 +119,7 @@ structured data. Please type:\
         .wait(500)
         .end('\nThis output shows you the structured data that the FRINX CLI plugin has parsed from the CLI device. The data is\
  based on a very simple YANG model that was built for demonstration purposes. In many cases users will use models like OpenConfig that\
- provide standardized access to all kind of config and operational data independent of network device vendor.\n');
+ provide standardized access to all kinds of config and operational data independent of network device vendor.\n');
 
       // A delay in millis between steps.
       tour.wait(4000);
