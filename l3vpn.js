@@ -123,7 +123,7 @@ vorpal
   });
 
 vorpal
-  .command('show l3vpn service')
+  .command('show l3vpn config')
   .description('Displays L3VPN configuration data service model information.')
 
   .action(function(args, callback) {
@@ -292,33 +292,37 @@ vorpal
     this.prompt([{
         type: 'input',
         name: 'site_id',
+        default: 'CE01',
         message: 'Site ID: '
       },
       {
         type: 'input',
         name: 'vpn_id',
+        default: 'bambi',
         message: 'VPN ID: '
       },
       {
         type: 'input',
         name: 'pe_id',
+        default: 'PE01',
         message: 'PE node ID: '
       },
       {
         type: 'input',
         name: 'pe_iface_id',
-        default: 'GigabitEthernet0/0/0/3',
+        default: 'GigabitEthernet0/0/0/2',
         message: 'PE interface name: '
       },
       {
         type: 'input',
         name: 'pe_iface_ip',
+        default: '10.9.9.1',
         message: 'PE interface IP: '
       },
       {
         type: 'input',
         name: 'pe_iface_mask',
-        default: 24,
+        default: 30,
         message: 'PE interface mask: '
       },
       {
@@ -342,11 +346,13 @@ vorpal
       {
         type: 'input',
         name: 'ce_iface_ip',
+        default: '10.9.9.2',        
         message: 'CE interface IP: '
       },
       {
         type: 'input',
         name: 'ce_bgp_as',
+        default: 65999,        
         message: 'CE BGP AS: '
       }
     ], function(answers) {
@@ -470,7 +476,7 @@ vorpal
     var self = this;
     
     request
-      .post('http://' + odl_ip + ':8181/restconf/operations/l3vpn-provider:process-l3vpn-svc')
+      .post('http://' + odl_ip + ':8181/restconf/operations/ietf-l3vpn-svc:commit-l3vpn-svc')
 
       .auth(odl_user, odl_pass)
       .accept('application/json')

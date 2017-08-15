@@ -27,10 +27,11 @@ Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
 \n\
 type \"tour admin\" to explore FRINX ODL admin commands\n\
 type \"tour cli\" to explore the CLI service module\n\
+type \"tour l3vpn\" to explore the L3VPN service module\n\
 type \"help\" to explore CLI commands\n\
 \n\
 \n\
-coming soon: \"tour l3vpn\" to explore L3VPN service provisioning features\n\
+coming soon: \"tour l2vpn\" to explore L2VPN service provisioning features\n\
 \n\
                      +---------------+\n\
                      |  FRINXIT CLI  |\n\
@@ -63,6 +64,7 @@ vorpal
   .use(require('./admin_01.js'))
   .use(require('./tour_admin_01.js'))
   .use(require('./tour_cli_01.js'))
+  .use(require('./tour_l3vpn_01.js'))
   .use(less)
   .use(grep)
   .show();
@@ -240,14 +242,21 @@ vorpal
 
 
 vorpal
-  .command('show nc-device <node_id>')
-  .description('Displays information about a netconf node in ODL. Requires node-id.')
+  .command('show nc-device config [node_id]')
+  .description('Displays information about NETCONF nodes in ODL data store. Optionally specify node-id.')
 
   .action(function(args, callback) {
     var self = this;
     var node_id = args.node_id;
+
+    if (args.node_id) {
+      var node_string = "node/" + args.node_id;
+    } else {
+      node_string = "";
+    }
+
     request
-      .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
+      .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/' + node_string)
 
       .auth(odl_user, odl_pass)
       .accept('application/json')
@@ -269,6 +278,36 @@ vorpal
       callback();
   });
 
+
+vorpal
+  .command('show nc-device operational <node_id>')
+  .description('Displays information about a netconf node in ODL. Requires node-id.')
+
+  .action(function(args, callback) {
+    var self = this;
+    var node_id = args.node_id;
+    request
+      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
+
+      .auth(odl_user, odl_pass)
+      .accept('application/json')
+      .set('Content-Type', 'application/json')
+
+      .end(function (err, res) {
+
+        if (err || !res.ok) {
+          self.log('Device was not found in data store. Error code: ' + err.status);
+        } 
+
+        if (res.status == 200) {
+          self.log('Device was found in data store. Status code: ' + res.status);
+        }
+
+        self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+      });
+      callback();
+  });
 
 vorpal
   .command('show operational yang-ext <node_name>')
