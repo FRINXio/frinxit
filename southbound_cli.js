@@ -244,7 +244,7 @@ vorpal
 
         request
           .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' 
-            + args.node_id + '/yang-ext:mount/ios-essential:interfaces')
+            + args.node_id + '/yang-ext:mount/openconfig-interfaces:interfaces')
 
           .auth(odl_user, odl_pass)
           .accept('application/json')
