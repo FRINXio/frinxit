@@ -63,7 +63,6 @@ vorpal
   .use(require('./admin_01.js'))
   .use(require('./tour_admin_01.js'))
   .use(require('./tour_cli_01.js'))
-  .use(require('./files_01'))
   .use(less)
   .use(grep)
   .show();
