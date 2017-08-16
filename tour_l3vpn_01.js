@@ -47,7 +47,7 @@ the username and password, both "cisco" in this example.')
 
 
       tour.step(2)
-        .begin('Let\'s mount another CLI device while we are at it. Please type:\
+        .begin('Let\'s mount another NETCONF device while we are at it. Please type:\
           \n\n"mount nc-device PE02 192.168.1.112 830 cisco cisco"\n\n')
         .expect("command", function (data, cb) {
           cb(data.command === 'mount nc-device PE02 192.168.1.112 830 cisco cisco');
@@ -93,7 +93,7 @@ all the YANG models and capabilities that the device supports.\n');
       tour.step(6)
         .begin('Let\' proceed to the real action. The reason why we went through all the previous steps, is to present an \
 abstract, model-based network service interface \
-to applications and users. In the next example, we will create a VRF (vpn routing and forwarding instance) in the network. \
+to applications and users. In the next example, we will create a VRF (Virtual Routing and Forwarding instance) in the network. \
 VRFs are usually configured only once when a new customer is onboarded to the network. Please type:\
           \n\n"create l3vpn vpn bambi"\n\n')
         .expect("command", function (data, cb) {
@@ -161,7 +161,7 @@ Please type:\n\n"commit l3vpn"\n\n\ ')
         .reject('Uh.. Let\'s type "commit l3vpn" instead...')
         .wait(500)
         .end('\nThis command has now created the configurations on the devices and shows the version number of the \
-configuration that was applied to the network devices. The version number is used to specify rollback of configurations.\n');
+configuration that was applied to the network devices.\n');
 
       // A delay in millis between steps.
       tour.wait(4000);
@@ -203,6 +203,18 @@ number of the last successful configuration.\n');
         .reject('Uh.. Let\'s type "delete l3vpn site CE01" instead...')
         .wait(3000)
         .end('\nExcellent.\n');
+
+
+      tour.step(40)
+        .begin('The last step is to issue another commit command so the operational data store gets updated and the configurations \
+will be deleted. Please type:\n\n"commit l3vpn"\n\n\ ')
+        .expect("command", function (data, cb) {
+          cb(data.command === 'commit l3vpn');
+        })
+        .reject('Uh.. Let\'s type "commit l3vpn" instead...')
+        .wait(500)
+        .end('\nThe FRINX ODL L3VPN service in config and operational data store and devices are now deleted.\n');
+
 
 // exec cli show vrfs R121
 
