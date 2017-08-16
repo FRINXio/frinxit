@@ -24,7 +24,6 @@ module.exports = function (vorpal) {
       // .wait waits `x` millis before completing the step
       // .end spits text to the user when the step completes.
 
-
      
       tour.step(1)
         .begin('Welcome to the FRINX southbound CLI service module tour! \
@@ -79,12 +78,12 @@ To see the supported device types, type:\n\n"show cli translate-registry"\n\n')
 
       tour.step(4)
         .begin('Let\'s check out the config data store to see what we have configured so far. Please type:\
-          \n\n"show cli topology config"\n\nA lot of things in ODL are called "topology", think of a topology in this context as a \
+          \n\n"show cli config"\n\nA lot of things in ODL are called "topology", think of a topology in this context as a \
 place for all things related to a domain or feature. There is a topology for L3VPN and a topology for CLI devices and so forth. You\'ll get the hang of it.')
         .expect("command", function (data, cb) {
-          cb(data.command === 'show cli topology config');
+          cb(data.command === 'show cli config');
         })
-        .reject('Uh.. Let\'s type "show cli topology config" instead..')
+        .reject('Uh.. Let\'s type "show cli config" instead..')
         .wait(500)
         .end('\nThis output shows you the configuration of the devices that you have mounted in the previous step.\n');
      
@@ -93,15 +92,15 @@ place for all things related to a domain or feature. There is a topology for L3V
 
       tour.step(5)
         .begin('Now we want to examine what the CLI plugin is doing and check the status of the connections to the CLI devices. Please type:\
-          \n\n"show cli topology operational"\n\n')
+          \n\n"show cli operational R121"\n\n')
         .expect("command", function (data, cb) {
-          cb(data.command === 'show cli topology operational');
+          cb(data.command === 'show cli operational R121');
         })
-        .reject('Uh.. Let\'s type "show cli topology operational" instead..')
+        .reject('Uh.. Let\'s type "show cli operational R121" instead..')
         .wait(500)
         .end('\nThis output shows you the operational state of CLI plugin and the CLI devices that it connects to. In the \
 "available-capability" section in the json response, we also see the information about which translation units and modules \
-are supported by each CLI device.\n');
+are supported by each CLI device. If you don\'t specify a node ID you will see a summary connection status.\n');
 
       // A delay in millis between steps.
       tour.wait(7000);

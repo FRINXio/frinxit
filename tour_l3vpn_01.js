@@ -75,7 +75,9 @@ place where all things related to a domain or a feature are stored. There is a t
       tour.wait(5000);
 
       tour.step(5)
-        .begin('Now we want to examine how FRINX ODL processes the mounted devices and how it connects to them. Please type:\
+        .begin('Now we want to examine how FRINX ODL processes the mounted devices and how it connects to them. It can take a little \
+while before the devices go from \"connecting\"" to \"connected\" state. Repeat the command until you see a fairly long list of YANG models \
+(e.g. about 450 for a CIsco IOS XR device).  Please type:\
           \n\n"show nc-device operational PE01"\n\n')
         .expect("command", function (data, cb) {
           cb(data.command === 'show nc-device operational PE01');
@@ -138,7 +140,7 @@ by pressing return at every prompt. Please type:\
 
       tour.step(15)
         .begin('Now we want to check out the L3VPN config data store again to see what we have configured so far. Please type:\
-          \n\n"show l3vpn config "\n\n\ ')
+          \n\n"show l3vpn config"\n\n\ ')
         .expect("command", function (data, cb) {
           cb(data.command === 'show l3vpn config');
         })

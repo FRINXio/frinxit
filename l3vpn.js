@@ -65,7 +65,7 @@ module.exports = function (vorpal) {
 
 vorpal
   .command('show operational simulated <pe_id>')
-  .description('Displays operational data of simulated PE device.')
+  .description('Display operational data of simulated PE device.')
 
   .action(function(args, callback) {
     var self = this;
@@ -95,7 +95,7 @@ vorpal
 
 vorpal
   .command('show l3vpn topologies simulated')
-  .description('Displays L3VPN topology information.')
+  .description('Display L3VPN topology information.')
 
   .action(function(args, callback) {
     var self = this;
@@ -124,7 +124,7 @@ vorpal
 
 vorpal
   .command('show l3vpn config')
-  .description('Displays L3VPN configuration data service model information.')
+  .description('Display L3VPN configuration data service model information.')
 
   .action(function(args, callback) {
     var self = this;
@@ -506,7 +506,7 @@ vorpal
 
   vorpal
     .command('show l3vpn operational')
-    .description('Displays operational data of the L3 VPN service.')
+    .description('Display operational data of the L3 VPN service.')
 
     .action(function(args, callback) {
       var self = this;

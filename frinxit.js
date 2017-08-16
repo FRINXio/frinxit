@@ -146,7 +146,7 @@ vorpal
 
 vorpal
   .command('banner')
-  .description('Displays the welcome banner (incl. topology diagram) again.')
+  .description('Display the welcome banner (incl. topology diagram) again.')
   .alias('welcome')
   .action(function(args, callback) {
     var self = this;
@@ -243,7 +243,7 @@ vorpal
 
 vorpal
   .command('show nc-device config [node_id]')
-  .description('Displays information about NETCONF nodes in ODL data store. Optionally specify node-id.')
+  .description('Display information about NETCONF nodes in ODL data store. Optionally specify node-id.')
 
   .action(function(args, callback) {
     var self = this;
@@ -280,39 +280,84 @@ vorpal
 
 
 vorpal
-  .command('show nc-device operational <node_id>')
-  .description('Displays information about a netconf node in ODL. Requires node-id.')
+  .command('show nc-device operational [node_id]')
+  .description('Display information about a netconf nodes operational state in ODL. Optionally specify node-id.')
 
-  .action(function(args, callback) {
-    var self = this;
-    var node_id = args.node_id;
-    request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
 
-      .auth(odl_user, odl_pass)
-      .accept('application/json')
-      .set('Content-Type', 'application/json')
+    .action(function(args, callback) {
+      var self = this;
+      var node_id = args.node_id;
 
-      .end(function (err, res) {
+      if (args.node_id) {
 
-        if (err || !res.ok) {
-          self.log('Device was not found in data store. Error code: ' + err.status);
-        } 
+        request
+          .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
 
-        if (res.status == 200) {
-          self.log('Device was found in data store. Status code: ' + res.status);
-        }
+          .auth(odl_user, odl_pass)
+          .accept('application/json')
+          .set('Content-Type', 'application/json')
 
-        self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          .end(function (err, res) {
 
-      });
-      callback();
-  });
+            if (err || !res.ok) {
+              self.log('Device was not found in data store. Error code: ' + err.status);
+            } 
+
+            if (res.status == 200) {
+              self.log('Device was found in data store. Status code: ' + res.status);
+            }
+
+            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+          });
+
+      } else {
+
+            request
+              .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/')
+
+              .auth(odl_user, odl_pass)
+              .accept('application/json')
+              .set('Content-Type', 'application/json')
+
+              .end(function (err, res) {
+
+                if (err || !res.ok) {
+                  self.log('Device was not found in data store. Error code: ' + err.status);
+                } 
+
+                if (res.status == 200) {
+                  self.log('Topology was found in data store. Status code: ' + res.status);
+                  var nc_nodes = JSON.parse(res.text);
+                  var node_item = '';
+
+                  self.log("Node ID" + "\t\t\t" + "Host IP" + "\t\t\t\t" + "Host Status");
+                  for (var i = 0; i < nc_nodes['topology'][0]['node'].length; i++) {
+                    node_item = nc_nodes['topology'][0]['node'][i];
+                    if (node_item['netconf-node-topology:connection-status'] === "connected") {
+                      self.log(node_item['node-id'] + "\t\t\t" + node_item['netconf-node-topology:host'] 
+                      + "\t\t\t" + node_item['netconf-node-topology:connection-status'].green);
+                    } else {
+                      self.log(node_item['node-id'] + "\t\t\t" + node_item['netconf-node-topology:host'] 
+                      + "\t\t\t" + node_item['netconf-node-topology:connection-status'].red);
+                    }
+                  }
+                }
+              });
+      }
+        callback();
+    });
+  
+ 
+
+
+
+
 
 vorpal
   .command('show operational yang-ext <node_name>')
-  .description('Displays ODL topology information.')
-
+  .description('Display ODL topology information.')
+  .hidden()
   .action(function(args, callback) {
     var self = this;
     request
@@ -340,9 +385,10 @@ vorpal
       callback();
   });
 
+
 vorpal
   .command('show odl topologies')
-  .description('Displays ODL topology information.')
+  .description('Display ODL topology information.')
 
   .action(function(args, callback) {
 

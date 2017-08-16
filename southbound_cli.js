@@ -9,7 +9,7 @@ var odl_pass = cli.odl_pass;
 module.exports = function (vorpal) {
   vorpal
     .command('show cli translate-registry')
-    .description('Displays available translation units.')
+    .description('Display available translation units.')
     .action(function(args, callback) {
       var self = this;
       request
@@ -36,43 +36,86 @@ module.exports = function (vorpal) {
     });
 
   vorpal
-      .command('show cli topology operational [node_id]')
-      .description('Displays CLI topology from operational data store.')
+      .command('show cli operational [node_id]')
+      .description('Display summary information from CLI topology from operational data store. \
+Optionally specify a node ID for detailed information about that node.')
       .action(function(args, callback) {
         var self = this;
         var node_id = "";
 
-        if (typeof args.node_id == 'undefined' ) 
-          { args.node_id = ""; }
-        else
-          { node_id = "node/" + args.node_id}
+        if (typeof args.node_id == 'undefined' ) {
 
-        request
-          .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/' + node_id)
+          request
+            .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/')
 
-          .auth(odl_user, odl_pass)
-          .accept('application/json')
-          .set('Content-Type', 'application/json')
+            .auth(odl_user, odl_pass)
+            .accept('application/json')
+            .set('Content-Type', 'application/json')
 
-          .end(function (err, res) {
+            .end(function (err, res) {
 
-            if (err || !res.ok) {
-              self.log('Error code: ' + err.status);
-            } 
+              if (err || !res.ok) {
+                self.log('Error code: ' + err.status);
+              } 
 
-            if (res.status == 200) {
-              self.log('Status code: ' + res.status);
-            }
+              if (res.status == 200) {
+                self.log('Topology was found in data store. Status code: ' + res.status);
+                var cli_nodes = JSON.parse(res.text);
+                var node_item = '';
 
-            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+                self.log("Node ID" + "\t\t\t" + "Host IP" + "\t\t\t\t" + "Host Status");
+                for (var i = 0; i < cli_nodes['topology'][0]['node'].length; i++) {
+                  node_item = cli_nodes['topology'][0]['node'][i];
+                  if (node_item['cli-topology:connection-status'] === "connected") {
+                    self.log(node_item['node-id'] + "\t\t\t" + "\t"
+                    + "\t\t\t" + node_item['cli-topology:connection-status'].green);
+                  } else {
+                    self.log(node_item['node-id'] + "\t\t\t" + "\t"
+                    + "\t\t\t" + node_item['cli-topology:connection-status'].red);
+                  }
+                }
 
-          });
+              }
+
+//              self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+            });
+
+        }
+        
+        else { 
+          node_id = "node/" + args.node_id
+
+          request
+            .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/' + node_id)
+
+            .auth(odl_user, odl_pass)
+            .accept('application/json')
+            .set('Content-Type', 'application/json')
+
+            .end(function (err, res) {
+
+              if (err || !res.ok) {
+                self.log('Error code: ' + err.status);
+              } 
+
+              if (res.status == 200) {
+                self.log('Status code: ' + res.status);
+              }
+
+              self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+            });
+        }
+
+
+
           callback();
       });
 
   vorpal
-      .command('show cli topology config [node_id]')
-      .description('Displays CLI topology from config data store.')
+      .command('show cli config [node_id]')
+      .description('Display CLI topology from config data store. Optionally specify a node ID to see a single node.')
       .action(function(args, callback) {
         var self = this;
         var node_id = "";
@@ -208,7 +251,7 @@ vorpal
 
   vorpal
       .command('exec cli show version <node_id>')
-      .description('Executes show version command on device and displays structured data.')
+      .description('Executes show version command on device and Display structured data.')
       .action(function(args, callback) {
         var self = this;
 
@@ -238,7 +281,7 @@ vorpal
 
   vorpal
       .command('exec cli show interfaces <node_id>')
-      .description('Executes show interface command on device and displays structured data.')
+      .description('Executes show interface command on device and Display structured data.')
       .action(function(args, callback) {
         var self = this;
 
@@ -268,7 +311,7 @@ vorpal
 
   vorpal
       .command('exec cli show vrfs <node_id>')
-      .description('Executes show ip vrf command on device and displays structured data.')
+      .description('Executes show ip vrf command on device and Display structured data.')
       .action(function(args, callback) {
         var self = this;
 
