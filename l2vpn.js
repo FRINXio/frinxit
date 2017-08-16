@@ -423,7 +423,7 @@ vorpal
         if (res.text) {
           self.log(JSON.stringify(JSON.parse(res.text), null, 2));
         }
-        
+
       });
       callback();
     });
@@ -482,7 +482,7 @@ to also remove from operational data store and devices.')
           } 
 
           if (res.status == 200) {
-            self.log('L2VPN pseudo wire temaplte was successfully deleted from the data store. Status code: ' + res.status);
+            self.log('L2VPN pseudo wire template was successfully deleted from the data store. Status code: ' + res.status);
           }
 
           if (res.text) {
@@ -492,5 +492,6 @@ to also remove from operational data store and devices.')
         });
         callback();
   });
+
 
 }

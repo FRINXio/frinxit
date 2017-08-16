@@ -28,10 +28,9 @@ Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
 type \"tour admin\" to explore FRINX ODL admin commands\n\
 type \"tour cli\" to explore the CLI service module\n\
 type \"tour l3vpn\" to explore the L3VPN service module\n\
+type \"tour l2vpn\" to explore the L2VPN service module\n\
 type \"help\" to explore CLI commands\n\
 \n\
-\n\
-coming soon: \"tour l2vpn\" to explore L2VPN service provisioning features\n\
 \n\
                      +---------------+\n\
                      |  FRINXIT CLI  |\n\
@@ -66,6 +65,7 @@ vorpal
   .use(require('./tour_admin_01.js'))
   .use(require('./tour_cli_01.js'))
   .use(require('./tour_l3vpn_01.js'))
+  .use(require('./tour_l2vpn_01.js'))
   .use(less)
   .use(grep)
   .show();
