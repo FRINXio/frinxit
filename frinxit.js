@@ -59,6 +59,7 @@ console.log(welcome_banner);
 vorpal
   .delimiter('frinxit$')
   .use(require('./l3vpn.js'))
+  .use(require('./l2vpn.js'))
   .use(require('./cluster.js'))
   .use(require('./southbound_cli.js'))
   .use(require('./admin_01.js'))
