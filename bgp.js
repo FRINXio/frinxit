@@ -7,7 +7,8 @@ var odl_pass = bgp.odl_pass;
 
 
 module.exports = function (vorpal) {
-  
+
+  //restconf/operational/network-topology:network-topology/topology/cli/node/R121/yang-ext:mount/openconfig-rib-bgp:bgp-rib
 }
 
 

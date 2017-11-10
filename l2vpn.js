@@ -149,15 +149,15 @@ vorpal
 
       .end(function (err, res) {
               if (err || !res.ok) {
-                self.log('Creation attempt was unsuccessful. Error code: ' + err.status);
+                self.log('Creation attempt was unsuccessful. Error code: '.red + err.status);
               } 
 
               if (res.status == 200) {
-                self.log('Pseudo wire template was successfully modified or overwritten in the data store. Status code: ' + res.status);
+                self.log('Pseudo wire template was successfully modified or overwritten in the data store. Status code: '.green + res.status);
               }       
 
               if (res.status == 201) {
-                self.log('Pseudo wire was successfully created and mounted in the data store. Status code: ' + res.status);
+                self.log('Pseudo wire was successfully created and mounted in the data store. Status code: '.green + res.status);
               }
 
               if (res.text) {
@@ -373,15 +373,15 @@ vorpal
 
         .end(function(err, res) {
           if (err || !res.ok) {
-            self.log('Creation attempt was unsuccessful. Error code: ' + err.status);
+            self.log('Creation attempt was unsuccessful. Error code: '.red + err.status);
           }
 
           if (res.status == 200) {
-            self.log('VPN was successfully modified or overwritten in the data store. Status code: ' + res.status);
+            self.log('VPN was successfully modified or overwritten in the data store. Status code: '.green + res.status);
           }
 
           if (res.status == 201) {
-            self.log('VPN was successfully created and mounted in the data store. Status code: ' + res.status);
+            self.log('VPN was successfully created and mounted in the data store. Status code: '.green + res.status);
           }
 
           if (res.text) {
@@ -409,15 +409,15 @@ vorpal
 
       .end(function (err, res) {
         if (err || !res.ok) {
-          self.log('Commit was unsuccessful. Error code: ' + err.status);
+          self.log('Commit was unsuccessful. Error code: '.red + err.status);
         } 
 
         if (res.status == 200) {
-          self.log('Device(s) were successfully modified or overwritten in the data store. Status code: ' + res.status);
+          self.log('Device(s) were successfully modified or overwritten in the data store. Status code: '.green + res.status);
         }       
 
         if (res.status == 201) {
-          self.log('Device(s) were successfully created and mounted in the data store. Status code: ' + res.status);
+          self.log('Device(s) were successfully created and mounted in the data store. Status code: '.green + res.status);
         }
 
         if (res.text) {
@@ -446,11 +446,11 @@ to also remove from operational data store and devices.')
 
         .end(function (err, res) {
           if (err || !res.ok) {
-            self.log('L2VPN Instance was not found in the data store. Error code: ' + err.status);
+            self.log('L2VPN Instance was not found in the data store. Error code: '.red + err.status);
           } 
 
           if (res.status == 200) {
-            self.log('L2VPN was successfully deleted from the data store. Status code: ' + res.status);
+            self.log('L2VPN was successfully deleted from the data store. Status code: '.green + res.status);
           }
 
           if (res.text) {
@@ -478,11 +478,11 @@ to also remove from operational data store and devices.')
 
         .end(function (err, res) {
           if (err || !res.ok) {
-            self.log('L2VPN pseudo wire template was not found in the data store. Error code: ' + err.status);
+            self.log('L2VPN pseudo wire template was not found in the data store. Error code: '.red + err.status);
           } 
 
           if (res.status == 200) {
-            self.log('L2VPN pseudo wire template was successfully deleted from the data store. Status code: ' + res.status);
+            self.log('L2VPN pseudo wire template was successfully deleted from the data store. Status code: '.green + res.status);
           }
 
           if (res.text) {

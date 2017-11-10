@@ -21,11 +21,11 @@ module.exports = function (vorpal) {
         .end(function (err, res) {
 
           if (err || !res.ok) {
-            self.log('Error code: ' + err.status);
+            self.log('Error code: '.red + err.status);
           } 
 
           if (res.status == 200) {
-            self.log('Status code: ' + res.status);
+            self.log('Status code: '.green + res.status);
           }
 
           var version = JSON.parse(res.text);
@@ -55,11 +55,11 @@ module.exports = function (vorpal) {
         .end(function (err, res) {
 
           if (err || !res.ok) {
-            self.log('Error code: ' + err.status);
+            self.log('Error code: '.red + err.status);
           } 
 
           if (res.status == 200) {
-            self.log('Status code: ' + res.status);
+            self.log('Status code: '.green + res.status);
           }
 
           if (typeof args.options.installed == 'undefined' ) { installed = false; } else { installed = true; };
@@ -106,11 +106,11 @@ module.exports = function (vorpal) {
         .end(function (err, res) {
 
           if (err || !res.ok) {
-            self.log('Error code: ' + err.status);
+            self.log('Error code: '.red + err.status);
           } 
 
           if (res.status == 200) {
-            self.log('Status code: ' + res.status);
+            self.log('Status code: '.green + res.status);
           }
 
           self.log(JSON.stringify(JSON.parse(res.text), null, 2));
@@ -136,15 +136,15 @@ vorpal
       .end(function (err, res) {
 
         if (err || !res.ok) {
-          self.log('Show command was unsuccessful. Error code: ' + err.status);
+          self.log('Show command was unsuccessful. Error code: '.red + err.status);
         } 
 
         if (res.status == 200) {
-          self.log('Success. Status code: ' + res.status);
+          self.log('Success. Status code: '.green + res.status);
         }       
 
         if (res.status == 201) {
-          self.log('Status code: ' + res.status);
+          self.log('Status code: '.green + res.status);
         }
 
         if (res.text) {
