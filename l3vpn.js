@@ -190,7 +190,7 @@ vorpal
     
       //hack default settings
     if (typeof args.customer_as == 'undefined' ) 
-      { args.customer_as = "65001"; };
+      { args.customer_as = "65000"; };
 
     if (typeof args.route_distinguisher == 'undefined' ) 
       { args.route_distinguisher = "10"; };
@@ -352,7 +352,7 @@ vorpal
       {
         type: 'input',
         name: 'ce_bgp_as',
-        default: 65999,        
+        default: 65111,        
         message: 'CE BGP AS: '
       }
     ], function(answers) {
