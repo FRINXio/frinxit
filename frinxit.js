@@ -16,7 +16,7 @@ var odl_pass = "admin";
 
 if (process.env.odl_target){    
   odl_ip = process.env.odl_target;
-  console.log('odl_ip = ' + odl_ip)};
+#  console.log('odl_ip = ' + odl_ip)};
 
 exports.odl_ip = odl_ip;
 exports.odl_user = odl_user;
