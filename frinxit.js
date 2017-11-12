@@ -16,11 +16,13 @@ var odl_pass = "admin";
 
 if (process.env.odl_target){    
   odl_ip = process.env.odl_target;
-  console.log('odl_ip = ' + odl_ip)};
+//  console.log('odl_ip = ' + odl_ip)
+};
 
 exports.odl_ip = odl_ip;
 exports.odl_user = odl_user;
 exports.odl_pass = odl_pass;
+exports.rpad;
 
 const welcome_banner = "************************************************************************\n\
 Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
@@ -32,22 +34,22 @@ type \"tour l2vpn\" to explore the L2VPN service module\n\
 type \"help\" to explore CLI commands\n\
 \n\
 \n\
-                     +---------------+\n\
-                     |  FRINXIT CLI  |\n\
-                     +-------+-------+\n\
-                             |              +-------------+\n\
-                     +-------v-------+      | IOS classic |\n\
-                     |   FRINX ODL   |      |     R1      |\n\
-                     |               +------>192.168.1.122|\n\
-                     +-------+-------+      +-------------+\n\
-                             |\n\
-       +-------------------------------------------+\n\
-       |                     |                     |\n\
-+------v------+       +------v------+       +------v------+\n\
-|  IOS XRv    |       | IOS classic |       |    IOS XRv  |\n\
-|    PE1      +-------+     P1      +-------+     PE2     |\n\
-|192.168.1.111|       |192.168.1.121|       |192.168.1.112|\n\
-+-------------+       +-------------+       +-------------+\n\
+                           +---------------+\n\
+                           |  FRINXIT CLI  |\n\
+                           +-------+-------+\n\
+                                   |\n\
+                           +-------v-------+\n\
+                           |   FRINX ODL   |\n\
+                           |               +\n\
+                           +-------+-------+\n\
+                                   |\n\
+       +--------------------------------------------------------+\n\
+       |                  |                  |                  |\n\
++------v------+    +------v------+    +------v------+    +------v------+\n\
+| IOS classic |    |   IOS XRv   |    |   IOS XRv   |    | IOS classic |\n\
+|    CE01     +----+    PE01     +----+    PE02     +----+    CE02     |\n\
+|192.168.1.122|    |192.168.1.111|    |192.168.1.112|    |192.168.1.121|\n\
++-------------+    +-------------+    +-------------+    +-------------+\n\
 \n\
 ************************************************************************";
 
@@ -59,6 +61,7 @@ vorpal
   .delimiter('frinxit$')
   .use(require('./l3vpn.js'))
   .use(require('./l2vpn.js'))
+  .use(require('./routing.js'))
   .use(require('./cluster.js'))
   .use(require('./southbound_cli.js'))
   .use(require('./admin_01.js'))
@@ -332,15 +335,15 @@ vorpal
                   var nc_nodes = JSON.parse(res.text);
                   var node_item = '';
 
-                  self.log("Node ID" + "\t\t\t" + "Host IP" + "\t\t\t\t" + "Host Status");
+                  self.log("Node ID".rpad(20) + "Host IP".rpad(20) + "Host Status".rpad(20));
                   for (var i = 0; i < nc_nodes['topology'][0]['node'].length; i++) {
                     node_item = nc_nodes['topology'][0]['node'][i];
                     if (node_item['netconf-node-topology:connection-status'] === "connected") {
-                      self.log(node_item['node-id'] + "\t\t\t" + node_item['netconf-node-topology:host'] 
-                      + "\t\t\t" + node_item['netconf-node-topology:connection-status'].green);
+                      self.log(node_item['node-id'].rpad(20) + node_item['netconf-node-topology:host'].rpad(20) + 
+                        node_item['netconf-node-topology:connection-status'].green.rpad(20));
                     } else {
-                      self.log(node_item['node-id'] + "\t\t\t" + node_item['netconf-node-topology:host'] 
-                      + "\t\t\t" + node_item['netconf-node-topology:connection-status'].red);
+                      self.log(node_item['node-id'].rpad(20) + node_item['netconf-node-topology:host'].rpad(20) +
+                        node_item['netconf-node-topology:connection-status'].red.rpad(20));
                     }
                   }
                 }
@@ -449,4 +452,21 @@ vorpal
         }
 	});
 
+
+// provide padding function to display items with equal character distance
+// e.g. cli tabs 
+String.prototype.rpad || (String.prototype.rpad = function( length, pad )
+{
+    if( length < this.length ) return this;
+
+    pad = pad || ' ';
+    str = this;
+
+    while( str.length < length )
+    {
+        str += pad;
+    }
+
+    return str.substr( 0, length );
+});
 

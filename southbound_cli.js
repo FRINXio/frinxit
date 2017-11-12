@@ -63,18 +63,18 @@ Optionally specify a node ID for detailed information about that node.')
                 var cli_nodes = JSON.parse(res.text);
                 var node_item = '';
 
-                self.log("Node ID" + "\t\t\t" + "Host IP" + "\t\t\t\t" + "Host Status");
+                self.log("Node ID".rpad(20) + "Host IP".rpad(20) + "Host Status".rpad(20));
+
                 for (var i = 0; i < cli_nodes['topology'][0]['node'].length; i++) {
                   node_item = cli_nodes['topology'][0]['node'][i];
                   if (node_item['cli-topology:connection-status'] === "connected") {
-                    self.log(node_item['node-id'] + "\t\t\t" + "\t"
-                    + "\t\t\t" + node_item['cli-topology:connection-status'].green);
+                    self.log(node_item['node-id'].rpad(20) + node_item['cli-topology:host'].rpad(20) + 
+                      node_item['cli-topology:connection-status'].green.rpad(20));
                   } else {
-                    self.log(node_item['node-id'] + "\t\t\t" + "\t"
-                    + "\t\t\t" + node_item['cli-topology:connection-status'].red);
+                    self.log(node_item['node-id'].rpad(40) +
+                      node_item['cli-topology:connection-status'].red.rpad(20));
                   }
                 }
-
               }
 
 //              self.log(JSON.stringify(JSON.parse(res.text), null, 2));
@@ -419,35 +419,6 @@ vorpal
       callback();
   });
 
-vorpal
-  .command('exec cli show bgp route <node_id>')
-  .description('Display bgp route information of router node_id.')
-
-  .action(function(args, callback) {
-    var self = this;
-    request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
-        args.node_id + '/yang-ext:mount/openconfig-rib-bgp:bgp-rib')
-      .auth(odl_user, odl_pass)
-      .accept('application/json')
-      .set('Content-Type', 'application/json')
-
-      .end(function (err, res) {
-        if (err || !res.ok) {
-          self.log('BGP information was not found on the device. Error code: ' + err.status);
-        } 
-
-        if (res.status == 200) {
-          self.log('BGP information retrieved. Status code: ' + res.status);
-        }
-
-        if (res.text) {
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-        }
-
-      });
-      callback();
-  });
 
 vorpal
   .command('exec cli command <node_id>')
@@ -495,3 +466,20 @@ vorpal
   });
 
 }
+
+/*
+String.prototype.rpad || (String.prototype.rpad = function( length, pad )
+{
+    if( length < this.length ) return this;
+
+    pad = pad || ' ';
+    str = this;
+
+    while( str.length < length )
+    {
+        str += pad;
+    }
+
+    return str.substr( 0, length );
+});
+*/
