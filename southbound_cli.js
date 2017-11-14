@@ -65,24 +65,25 @@ Optionally specify a node ID for detailed information about that node.')
 
                 self.log("Node ID".rpad(20) + "Host IP".rpad(20) + "Host Status".rpad(20));
 
-                for (var i = 0; i < cli_nodes['topology'][0]['node'].length; i++) {
-                  node_item = cli_nodes['topology'][0]['node'][i];
-                  if (node_item['cli-topology:connection-status'] === "connected") {
-                    self.log(node_item['node-id'].rpad(20) + node_item['cli-topology:host'].rpad(20) + 
-                      node_item['cli-topology:connection-status'].green.rpad(20));
-                  } else {
-                    self.log(node_item['node-id'].rpad(40) +
-                      node_item['cli-topology:connection-status'].red.rpad(20));
+                try {
+                  for (var i = 0; i < cli_nodes['topology'][0]['node'].length; i++) {
+                    node_item = cli_nodes['topology'][0]['node'][i];
+                    if (node_item['cli-topology:connection-status'] === "connected") {
+                      self.log(node_item['node-id'].rpad(20) + node_item['cli-topology:host'].rpad(20) + 
+                        node_item['cli-topology:connection-status'].green.rpad(20));
+                    } else {
+                      self.log(node_item['node-id'].rpad(40) +
+                        node_item['cli-topology:connection-status'].red.rpad(20));
+                    }
                   }
                 }
+                catch (err) {
+                  self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+                }
               }
-
-//              self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-
             });
 
         }
-        
         else { 
           node_id = "node/" + args.node_id
 
@@ -153,6 +154,8 @@ vorpal
   .description('Mount a CLI device via ssh transport layer. Default transport-type is ssh and default port is 22.')
   .option('-t, --telnet', 'Sets transport type from ssh (default) to telnet')
   .option('-p, --port <port>', 'Change default port from ssh = 22 or telnet = 23')
+  .option('-d, --dry-run <dr_journal_size>', 'set journal size for dry-run')
+  .option('-j, --journal <journal_size>', 'set journal size')
   .action(function(args, callback) {
     var self = this;
     var transport_type = 'ssh';
@@ -172,8 +175,13 @@ vorpal
       { transport_type = 'telnet';
         port = args.options.port;
         if (typeof args.options.port == 'undefined' ) { port = '23'};
-
       };
+
+    if ( args.options.dr_journal_size == 'undefined' ) 
+      { args.options.dr_journal_size = '180' };
+
+    if ( args.options.journal_size == 'undefined' ) 
+      { args.options.journal_size = '150' };
 
 
     request
@@ -193,7 +201,9 @@ vorpal
                     "cli-topology:device-type" : "' + args.device_type + '",\
                     "cli-topology:device-version" : "' + args.device_version + '",\
                     "cli-topology:username" : "' + args.username + '",\
-                    "cli-topology:password" : "' + args.password + '"\
+                    "cli-topology:password" : "' + args.password + '",\
+                    "cli-topology:journal-size": "150",\
+                    "cli-topology:dry-run-journal-size": "180"\
                 }\
               }')
 
@@ -385,9 +395,6 @@ vorpal
                 case 'ipv4':
                   self.log("Summary of interface states with IPv4 information:");
 
-                  self.log(displayInterfaces(JSON.parse(res.text), "ipv4"));
-/*
-
                   var interfaces = JSON.parse(res.text);
                   var interface_list = {};
                   var interface_item = '';
@@ -492,7 +499,7 @@ vorpal
                       }
                     }                    
                   } 
-*/
+
                 break;
 
 
@@ -505,6 +512,67 @@ vorpal
           callback();
       });  
 
+
+  vorpal
+      .command('show cli journal <node_id>')
+      .description('Displays the journal of <node-id>.')
+      .action(function(args, callback) {
+        var self = this;
+
+        request
+          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
+          .auth(odl_user, odl_pass)
+          .accept('application/json')
+          .set('Content-Type', 'application/json')
+
+          .end(function (err, res) {
+
+            if (err || !res.ok) {
+              self.log('Error code: ' + err.status);
+            } 
+
+            if (res.status == 200) {
+              self.log('Status code: ' + res.status);
+            }
+
+            
+            var output = (JSON.parse(res.text));
+            self.log(output['output']['journal']);
+
+          });
+          callback();
+      }); 
+
+
+    vorpal
+      .command('show cli dry-run-journal <node_id>')
+      .description('Displays the journal of <node-id>.')
+      .action(function(args, callback) {
+        var self = this;
+
+        request
+          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '-dryrun/yang-ext:mount/journal:read-journal')
+          .auth(odl_user, odl_pass)
+          .accept('application/json')
+          .set('Content-Type', 'application/json')
+
+          .end(function (err, res) {
+
+            if (err || !res.ok) {
+              self.log('Error code: ' + err.status);
+            } 
+
+            if (res.status == 200) {
+              self.log('Status code: ' + res.status);
+            }
+
+            
+            var output = (JSON.parse(res.text));
+            self.log(output['output']['journal']);
+
+          });
+          callback();
+      });     
 
 
   vorpal
@@ -662,123 +730,6 @@ vorpal
       });
 
   });
-
-
-function displayInterfaces(interfaces, display_option) {
-
-  this.interfaces = interfaces;
-  this.display_option = display_option;
-
-  var self = this;
-  var interface_list = {};
-  var interface_item = '';
-  var subinterface_item = '';
-  var address_item = '';
-
-  var text = "This is our text";
-/*
-  for (var i = 0; i < interfaces['interfaces']['interface'].length; i++) {
-    interface_item = interfaces['interfaces']['interface'][i];
-    interface_list[interface_item['name']] = interface_item['state']['oper-status'];
-
-  }
-
-  console.log("Interface Name".rpad(30).blue + "Subintf".rpad(10).blue + "IP Address".rpad(20).blue + "Operational Status".blue);
-  var keys = Object.keys(interface_list);
-  keys.sort();
-
-  for (var l=0; l<keys.length; l++) {
-    var key = keys[l];
-
-    for (var i = 0; i < interfaces['interfaces']['interface'].length; i++) {
-      interface_item = interfaces['interfaces']['interface'][i];
-
-      if (interface_item['name'] == key) {
-
-        for (var j = 0; j < interface_item['subinterfaces']['subinterface'].length; j++) {
-          subinterface_item =  interface_item['subinterfaces']['subinterface'][j];
-
-          //we try to read the ip addresses from the sub-interface
-          try { 
-
-            for (var k = 0; k < subinterface_item['openconfig-if-ip:ipv4']['addresses']['address'].length; k++) {
-              address_item = subinterface_item['openconfig-if-ip:ipv4']['addresses']['address'][k];
-
-              //subinterface with index 0 has its operational status in the main interface section
-              if (interface_item['subinterfaces']['subinterface'][j]['index'] == 0) {
-
-                if (interface_item['state']['oper-status'] == "UP") {
-
-                self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                  address_item['ip'].toString().rpad(20) +
-                  interface_item['state']['oper-status'].green);
-
-                } else {
-
-                    self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                      address_item['ip'].toString().rpad(20) +
-                      interface_item['state']['oper-status'].red);
-                }
-              // for all other subinterfcae > index 0 we need to look into the subinterface section
-              } else { 
-
-                  if (interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'] == "UP") {
-
-                  self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                    address_item['ip'].toString().rpad(20) +
-                    interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].green);
-
-                  } else {
-
-                      self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                        address_item['ip'].toString().rpad(20) +
-                        interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].red);
-                  }
-                }
-            }
-          }
-          // we go down this path if we have failed to read an ip address, because there is none configured
-          catch (err) {
-            //subinterface with index 0 has its operational status in the main interface section
-            if (interface_item['subinterfaces']['subinterface'][j]['index'] == 0) {
-
-              if (interface_item['state']['oper-status'] == "UP") {
-
-              self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                "n/a".rpad(20) +
-                interface_item['state']['oper-status'].green);
-
-              } else {
-
-                  self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                    "n/a".rpad(20) +
-                    interface_item['state']['oper-status'].red);
-              }
-
-            } else { // for all other subinterfcae > index 0 we need to look into the subinterface section
-
-                if (interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'] == "UP") {
-
-                self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                  "n/a".rpad(20) +
-                  interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].green);
-
-                } else {
-
-                    self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                      "n/a".rpad(20) +
-                      interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].red);
-                }
-              }
-          }
-        }
-      }
-    }                    
-  } 
-*/
-  return text;
-
-}
 
 
 }
