@@ -202,8 +202,8 @@ Please type:\n\n"commit l2vpn"\n\n\ ')
         .wait(3000)
         .end('\nExcellent.\n');
 
-/* in 2.3.1 there is a situation that a commit will catastrophically fail and crash frinxit if an instance refers to a non-existant 
-// pw-template in the cinfig data store. The required behavior is a warning only.
+// in 2.3.1 there is a situation that a commit will catastrophically fail and crash frinxit if an instance refers to a non-existant 
+// pw-template in the config data store. The required behavior is a warning only.
 
       tour.step(40)
         .begin('The last step is to issue another commit command so the operational data store gets updated and the configurations \
@@ -214,9 +214,7 @@ will be deleted. Please type:\n\n"commit l2vpn"\n\n\ ')
         .reject('Uh.. Let\'s type "commit l2vpn" instead...')
         .wait(500)
         .end('\nThe FRINX ODL L2VPN service in config and operational data store and devices are now deleted.\n');
-*/
 
-// exec cli show vrfs R121
 
       // Ends the tour, spits text to the user.
       tour.end('This is it for now. Very well done! Type "banner" to see the welcome message, including the lab topology diagram again.');

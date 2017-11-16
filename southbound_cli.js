@@ -575,6 +575,35 @@ vorpal
       });     
 
 
+    vorpal
+      .command('exec cli reconcile <node_id>')
+      .description('Forces reconciliation between <node-id> and odl data store.')
+      .action(function(args, callback) {
+        var self = this;
+
+        request
+          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '/yang-ext:mount/reconcile:reconcile')
+          .auth(odl_user, odl_pass)
+          .accept('application/json')
+          .set('Content-Type', 'application/json')
+
+          .end(function (err, res) {
+
+            if (err || !res.ok) {
+              self.log('Error code: ' + err.status);
+            } 
+
+            if (res.status == 200) {
+              self.log('Status code: ' + res.status);
+            }
+            
+            self.log(JSON.parse(res.text));
+
+          });
+          callback();
+      });
+
+
   vorpal
       .command('exec cli show vrfs <node_id>')
       .description('Executes show ip vrf command on device and Display structured data.')
