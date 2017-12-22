@@ -42,6 +42,7 @@ Optionally specify a node ID for detailed information about that node.')
       .action(function(args, callback) {
         var self = this;
         var node_id = "";
+        var node_list = {};
 
         if (typeof args.node_id == 'undefined' ) {
 
@@ -68,14 +69,20 @@ Optionally specify a node ID for detailed information about that node.')
                 try {
                   for (var i = 0; i < cli_nodes['topology'][0]['node'].length; i++) {
                     node_item = cli_nodes['topology'][0]['node'][i];
-                    if (node_item['cli-topology:connection-status'] === "connected") {
-                      self.log(node_item['node-id'].rpad(20) + node_item['cli-topology:host'].rpad(20) + 
-                        node_item['cli-topology:connection-status'].green.rpad(20));
-                    } else {
-                      self.log(node_item['node-id'].rpad(40) +
-                        node_item['cli-topology:connection-status'].red.rpad(20));
-                    }
+                    node_list[node_item['node-id']] = [node_item['cli-topology:host'], node_item['cli-topology:connection-status']];
                   }
+                  var keys = Object.keys(node_list);
+                  keys.sort();
+
+
+                  for (var i=0; i<keys.length; i++) {
+                    var key = keys[i];
+                    if (node_list[key][1] === "connected"){
+                      self.log(key.rpad(20) + node_list[key][0].rpad(20) + node_list[key][1].rpad(20).green);
+                    } else {
+                      self.log(key.rpad(40) + node_list[key][1].rpad(20).red);                      
+                    }
+                  } 
                 }
                 catch (err) {
                   self.log(JSON.stringify(JSON.parse(res.text), null, 2));
@@ -85,7 +92,7 @@ Optionally specify a node ID for detailed information about that node.')
 
         }
         else { 
-          node_id = "node/" + args.node_id
+          node_id = "node/" + args.node_id;
 
           request
             .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/' + node_id)
