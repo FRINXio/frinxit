@@ -55,7 +55,14 @@ type \"help\" to explore CLI commands\n\
 
 exports.welcome_banner = welcome_banner;
 
-console.log(welcome_banner);
+// if you start frinxit with the argument 'playground' teh banner will be displayed
+// e.g. node frinxit.js playground
+// will display the banner at startup
+
+if (process.argv.slice(2) == 'playground') {
+  console.log(welcome_banner);
+}
+
 
 vorpal
   .delimiter('frinxit$')
@@ -64,6 +71,8 @@ vorpal
   .use(require('./routing.js'))
   .use(require('./cluster.js'))
   .use(require('./southbound_cli.js'))
+  .use(require('./interfaces.js'))
+  .use(require('./uniconfig_manager.js'))
   .use(require('./admin_01.js'))
   .use(require('./tour_admin_01.js'))
   .use(require('./tour_cli_01.js'))
@@ -336,16 +345,23 @@ vorpal
                   var node_item = '';
 
                   self.log("Node ID".rpad(20) + "Host IP".rpad(20) + "Host Status".rpad(20));
-                  for (var i = 0; i < nc_nodes['topology'][0]['node'].length; i++) {
-                    node_item = nc_nodes['topology'][0]['node'][i];
-                    if (node_item['netconf-node-topology:connection-status'] === "connected") {
-                      self.log(node_item['node-id'].rpad(20) + node_item['netconf-node-topology:host'].rpad(20) + 
-                        node_item['netconf-node-topology:connection-status'].green.rpad(20));
-                    } else {
-                      self.log(node_item['node-id'].rpad(20) + node_item['netconf-node-topology:host'].rpad(20) +
-                        node_item['netconf-node-topology:connection-status'].red.rpad(20));
+
+                  try {
+                    for (var i = 0; i < nc_nodes['topology'][0]['node'].length; i++) {
+                      node_item = nc_nodes['topology'][0]['node'][i];
+                      if (node_item['netconf-node-topology:connection-status'] === "connected") {
+                        self.log(node_item['node-id'].rpad(20) + node_item['netconf-node-topology:host'].rpad(20) + 
+                          node_item['netconf-node-topology:connection-status'].green.rpad(20));
+                      } else {
+                        self.log(node_item['node-id'].rpad(20) + node_item['netconf-node-topology:host'].rpad(20) +
+                          node_item['netconf-node-topology:connection-status'].red.rpad(20));
+                      }
                     }
                   }
+                  catch (err) {
+                    self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+                  }
+
                 }
               });
       }
@@ -353,8 +369,6 @@ vorpal
     });
   
  
-
-
 
 
 
@@ -453,7 +467,7 @@ vorpal
 	});
 
 
-// provide padding function to display items with equal character distance
+// provide padding function to all modules to display items with equal character distance
 // e.g. cli tabs 
 String.prototype.rpad || (String.prototype.rpad = function( length, pad )
 {

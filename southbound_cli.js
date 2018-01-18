@@ -185,11 +185,12 @@ vorpal
       };
 
     if ( args.options.dr_journal_size == 'undefined' ) 
-      { args.options.dr_journal_size = '180' };
+      { args.options.dr_journal_size = 180 };
 
     if ( args.options.journal_size == 'undefined' ) 
-      { args.options.journal_size = '150' };
+      { args.options.journal_size = 150 };
 
+// TODO make dr journal and journal size configurable thru CLI
 
     request
       .put('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/node/' + args.node_id)
@@ -210,7 +211,7 @@ vorpal
                     "cli-topology:username" : "' + args.username + '",\
                     "cli-topology:password" : "' + args.password + '",\
                     "cli-topology:journal-size": "150",\
-                    "cli-topology:dry-run-journal-size": "180"\
+                    "cli-topology:dry-run-journal-size": "150"\
                 }\
               }')
 
@@ -304,7 +305,7 @@ vorpal
 
         request
           .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' 
-            + args.node_id + '/yang-ext:mount/openconfig-interfaces:interfaces')
+            + args.node_id + '/yang-ext:mount/frinx-openconfig-interfaces:interfaces')
 
           .auth(odl_user, odl_pass)
           .accept('application/json')
@@ -432,8 +433,8 @@ vorpal
                           //we try to read the ip addresses from the sub-interface
                           try { 
 
-                            for (var k = 0; k < subinterface_item['openconfig-if-ip:ipv4']['addresses']['address'].length; k++) {
-                              address_item = subinterface_item['openconfig-if-ip:ipv4']['addresses']['address'][k];
+                            for (var k = 0; k < subinterface_item['frinx-openconfig-if-ip:ipv4']['addresses']['address'].length; k++) {
+                              address_item = subinterface_item['frinx-openconfig-if-ip:ipv4']['addresses']['address'][k];
 
                               //subinterface with index 0 has its operational status in the main interface section
                               if (interface_item['subinterfaces']['subinterface'][j]['index'] == 0) {

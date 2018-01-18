@@ -9,14 +9,14 @@ var odl_pass = bgp.odl_pass;
 module.exports = function (vorpal) {
 
 vorpal
-  .command('exec cli show bgp summary <node_id>')
+  .command('show bgp summary <node_id>')
   .description('Display bgp summary information of router node_id.')
 
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
-        args.node_id + '/yang-ext:mount/openconfig-network-instance:network-instances/network-instance/default/protocols/protocol/openconfig-policy-types:BGP/default/')
+      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/unified/node/' +
+        args.node_id + '/yang-ext:mount/frinx-openconfig-network-instance:network-instances/network-instance/default/protocols/protocol/frinx-openconfig-policy-types:BGP/default/')
       .auth(odl_user, odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
@@ -40,14 +40,14 @@ vorpal
 
 
 vorpal
-  .command('exec cli show bgp route <node_id>')
+  .command('show bgp route <node_id>')
   .description('Display bgp route information of router node_id.')
 
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
-        args.node_id + '/yang-ext:mount/openconfig-rib-bgp:bgp-rib')
+      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/unified/node/' +
+        args.node_id + '/yang-ext:mount/frinx-openconfig-rib-bgp:bgp-rib')
       .auth(odl_user, odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
