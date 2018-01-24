@@ -9,19 +9,30 @@ var odl_user = cli.odl_user;
 var odl_pass = cli.odl_pass;
 
 
-const FILENAME_CONFIG = "uni_config.cfg";
-const FILENAME_OPERATIONAL = "uni_operational.cfg";
+const FILENAME_CONFIG = "uni_config.json";
+const FILENAME_OPERATIONAL = "uni_operational.json";
 const FOLDER_NAME = "config-data";
-const KNOWN_TOPOLOGIES = ['cli', 'topology-netconf', 'uniconfig']; // to identify the snapshots we define which 
+const KNOWN_TOPOLOGIES = ['cli', 'topology-netconf', 'uniconfig']; // required to identify the snapshots we define which 
                                                                    //topologies are not snapshots and show the rest
 
 
 module.exports = function (vorpal) {
+
+// ##########################################################
+// RPC commands
+
 vorpal
       .command('exec uniconfig sync-from-network <node_id>')
-      .description('Updates the operational data store with the current configuration of the device <node_id>.')
+      .description('Updates the operational data store with the current configuration of the device <node_id>. \
+If you want to sync multiple nodes from the network to the operational data store type: \"exec uniconfig sync-from-network \"IOS01, IOS02\"')
       .action(function(args, callback) {
         var self = this;
+
+        if (typeof args.node_id == 'undefined' ){
+          var node_id = "";
+        } else {
+          var node_id = 'node: [' + args.node_id + ']';
+        }
 
       request
         .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:sync-from-network')
@@ -29,14 +40,11 @@ vorpal
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
-  "input": {\
-    "node-to-sync": [\
-      {\
-        "node-id": "' + args.node_id + '"\
-      }\
-    ]\
-  }\
-}')
+    "input": {\
+        "target-nodes": {' + node_id + '}\
+    }\
+}')  
+
         .end(function (err, res) {
           if (err || !res.ok) {
             self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
@@ -50,6 +58,181 @@ vorpal
           } 
           if (res.status == 200) {
             self.log("Status code: " + res.status + "\nThe operational data store was successfully updated with the operational state of node " + args.node_id + '.' );
+          }
+          if (res.text) {
+            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          }
+        });
+        callback();
+
+      }); 
+
+vorpal
+      .command('exec uniconfig replace-config-with-operational')
+      .description('Replaces config data store with operational data store content.')
+      .action(function(args, callback) {
+        var self = this;
+
+      request
+        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-operational')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/JSON')
+        .send('{\
+    "input": {\
+        "target-nodes": {}\
+    }\
+}') 
+
+        // TOODO: Add node-id to replace only specific nodes in config data store
+
+        .end(function (err, res) {
+          if (err || !res.ok) {
+            self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
+
+            if (res.status == 404) {
+              self.log('Command failed.');
+            } else
+            {
+              self.log(err);
+            }
+          } 
+          if (res.status == 200) {
+            self.log("Status code: " + res.status + "\nThe config data store was successfully updated with content from the operational data store.");
+          }
+          if (res.text) {
+            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          }
+        });
+        callback();
+
+      }); 
+
+
+vorpal
+      .command('exec uniconfig replace-config-with-snapshot <name>')
+      .description('Replaces config data store with snapshot <name>.')
+      .action(function(args, callback) {
+        var self = this;
+
+      request
+        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-snapshot')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/JSON')
+        .send('{\
+  "input": {\
+    "name": "' + args.name + '"\
+  }\
+}')       
+
+        .end(function (err, res) {
+          if (err || !res.ok) {
+            self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
+
+            if (res.status == 404) {
+              self.log('Command failed.');
+            } else
+            {
+              self.log(err);
+            }
+          } 
+          if (res.status == 200) {
+            self.log("Status code: " + res.status + "\nThe config data store was successfully updated with content from the snampshot " 
+              + args.name + ".");
+          }
+          if (res.text) {
+            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          }
+        });
+        callback();
+
+      }); 
+
+
+
+
+vorpal
+      .command('commit uniconfig [node_id]')
+      .description('Commit operational data store content to devices. \
+If you want to commit to a subset of nodes type: \"commit uniconfig \"IOS01, IOS02\"')
+      .action(function(args, callback) {
+        var self = this;
+
+        if (typeof args.node_id == 'undefined' ){
+          var node_id = "";
+        } else {
+          var node_id = 'node: [' + args.node_id + ']';
+        }
+
+      request
+        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:commit')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/JSON')
+        .send('{\
+    "input": {\
+        "target-nodes": {' + node_id + '}\
+    }\
+}')        
+        .end(function (err, res) {
+          if (err || !res.ok) {
+            self.log('Commit attempt was unsuccessful. Error code: ' + err.status);
+
+            if (res.status == 404) {
+              self.log('Command failed.');
+            } else
+            {
+              self.log(err);
+            }
+          } 
+          if (res.status == 200) {
+            self.log("Status code: " + res.status + "\nData store content was comitted to operational data store and downloaded to devices.".green);
+          }
+          if (res.text) {
+            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          }
+        });
+        callback();
+
+      }); 
+
+vorpal
+      .command('commit uniconfig dry-run')
+      .description('Commit operational data store content to dry-run devices.\
+If you want to commit to a subset of nodes type: \"commit uniconfig dry-run \"IOS01, IOS02\"')
+      .action(function(args, callback) {
+        var self = this;
+
+        if (typeof args.node_id == 'undefined' ){
+          var node_id = "";
+        } else {
+          var node_id = 'node: [' + args.node_id + ']';
+        }
+
+      request
+        .post('http://' + odl_ip + ':8181/restconf/operations/dryrun-manager:dryrun-commit')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/JSON')
+        .send('{\
+    "input": {\
+        "target-nodes": {' + node_id + '}\
+    }\
+}')          
+        .end(function (err, res) {
+          if (err || !res.ok) {
+            self.log('Dry-run commit attempt was unsuccessful. Error code: ' + err.status);
+
+            if (res.status == 404) {
+              self.log('Command failed.');
+            } else
+            {
+              self.log(err);
+            }
+          } 
+          if (res.status == 200) {
+            self.log("Status code: " + res.status + "\nDry-run commit was executed.".green);
           }
           if (res.text) {
             self.log(JSON.stringify(JSON.parse(res.text), null, 2));
@@ -115,7 +298,7 @@ vorpal
 }')
         .end(function (err, res) {
           if (err || !res.ok) {
-            self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
+            self.log('Deletion attempt was unsuccessful. Error code: ' + err.status);
 
             if (res.status == 404) {
               self.log('Command failed.');
@@ -134,113 +317,9 @@ vorpal
         callback();
       });       
 
-vorpal
-      .command('exec uniconfig replace-config-with-operational')
-      .description('Replaces config data store with operational data store content.')
-      .action(function(args, callback) {
-        var self = this;
 
-      request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-operational')
-        .auth(odl_user, odl_pass)
-        .accept('application/json')
-        .set('Content-Type', 'application/JSON')
-        .end(function (err, res) {
-          if (err || !res.ok) {
-            self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
-
-            if (res.status == 404) {
-              self.log('Command failed.');
-            } else
-            {
-              self.log(err);
-            }
-          } 
-          if (res.status == 200) {
-            self.log("Status code: " + res.status + "\nThe config data store was successfully updated with content from the operational data store.");
-          }
-          if (res.text) {
-            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-          }
-        });
-        callback();
-
-      }); 
-
-
-vorpal
-      .command('exec uniconfig replace-config-with-snapshot <name>')
-      .description('Replaces config data store with snapshot <name>.')
-      .action(function(args, callback) {
-        var self = this;
-
-      request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-snapshot')
-        .auth(odl_user, odl_pass)
-        .accept('application/json')
-        .set('Content-Type', 'application/JSON')
-        .send('{\
-  "input": {\
-    "name": "' + args.name + '"\
-  }\
-}')       
-
-        .end(function (err, res) {
-          if (err || !res.ok) {
-            self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
-
-            if (res.status == 404) {
-              self.log('Command failed.');
-            } else
-            {
-              self.log(err);
-            }
-          } 
-          if (res.status == 200) {
-            self.log("Status code: " + res.status + "\nThe config data store was successfully updated with content from the snampshot " 
-              + args.name + ".");
-          }
-          if (res.text) {
-            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-          }
-        });
-        callback();
-
-      }); 
-
-vorpal
-      .command('commit uniconfig')
-      .description('Commit operational data store content to devices.')
-      .action(function(args, callback) {
-        var self = this;
-
-      request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:commit')
-        .auth(odl_user, odl_pass)
-        .accept('application/json')
-        .set('Content-Type', 'application/JSON')
-        .end(function (err, res) {
-          if (err || !res.ok) {
-            self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
-
-            if (res.status == 404) {
-              self.log('Command failed.');
-            } else
-            {
-              self.log(err);
-            }
-          } 
-          if (res.status == 200) {
-            self.log("Status code: " + res.status + "\nData store content was comitted to operational data store and downloaded to devices.".green);
-          }
-          if (res.text) {
-            self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-          }
-        });
-        callback();
-
-      }); 
-
+// ##########################################################
+// Show commands
 
 vorpal
       .command('show uniconfig calculate-diff [node_id]')
@@ -248,11 +327,24 @@ vorpal
       .action(function(args, callback) {
         var self = this;
 
+        if (typeof args.node_id == 'undefined' ){
+          var node_id = "";
+        } else {
+          var node_id = 'node: [' + args.node_id + ']';
+        }
+
       request
         .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:calculate-diff')
         .auth(odl_user, odl_pass)
         .accept('xml')
         .parse(xml2jsParser)
+        .set('Content-Type', 'application/JSON')
+        .send('{\
+    "input": {\
+        "target-nodes": {' + node_id + '}\
+    }\
+}')   
+
         .end(function (err, res) {
           if (err || !res.ok) {
             self.log('Sync attempt was unsuccessful. Error code: ' + err.status);
@@ -268,55 +360,41 @@ vorpal
             self.log("Status code: " + res.status + "\n");
           }
 
-          if (typeof args.node_id == 'undefined' ) {
+          try {
 
-            try {
+            if (typeof res.body['output']['node-with-diff'] != 'undefined') {
 
-              if (typeof res.body['output']['node-with-diff'] != 'undefined') {
+              node_list = res.body['output']['node-with-diff'];
 
-                node_list = res.body['output']['node-with-diff'];
+              for (var i = 0; i < node_list.length; i++) {
+                self.log("\n###################### " + node_list[i]['node-id'] + " ######################");
+                self.log("---- Created data in config DS compared with operational DS ----");
 
-                for (var i = 0; i < node_list.length; i++) {
-                  self.log("\n###################### " + node_list[i]['node-id'] + " ######################");
-                  self.log("---- Created data in config DS compared with operational DS ----");
-
-                  try {
-                    for (var j = 0; j < node_list[i]['created-data'].length; j++) {
-                      self.log(node_list[i]['created-data'][j]['data'][0].green);
-                    }
-                   
+                try {
+                  for (var j = 0; j < node_list[i]['created-data'].length; j++) {
+                    self.log(node_list[i]['created-data'][j]['data'][0].green);
                   }
-                  catch (err) {
-                    self.log("none");
-                  }
-
-                  self.log("---- Deleted data from config DS compared with operational DS ----");
-                  try {
-
-                    for (var k = 0; k < node_list[i]['deleted-data'].length; k++) {
-                      self.log(node_list[i]['deleted-data'][k]['data'][0].red);
-                    }                    
-                  } 
-                  catch (err) {
-                    self.log("none");                    
-                  }
-
                 }
-              } else {
+                catch (err) {
+                  self.log("none");
+                }
+                self.log("---- Deleted data from config DS compared with operational DS ----");
+                try {
 
-                self.log("No diffs between config and operational datastore.");
-
+                  for (var k = 0; k < node_list[i]['deleted-data'].length; k++) {
+                    self.log(node_list[i]['deleted-data'][k]['data'][0].red);
+                  }                    
+                } 
+                catch (err) {
+                  self.log("none");                    
+                }
               }
-
+            } else {
+              self.log("No diffs between config and operational datastore.");
             }
-            catch (err) {
-              self.log(res.body);
-            }
-
-
-          } else {
-
-            //todo add code that displays diffs only for one specific node-id 
+          }
+          catch (err) {
+            self.log(res.body);
           }
 
         });
@@ -324,10 +402,12 @@ vorpal
 
       }); 
 
+// ##########################################################
+// Show commands & file access
 
 vorpal
     .command('show uniconfig config [node_id]')
-    .description('Display device configuration in config data store. Optionally specify a node ID to see a single node.')
+    .description('Display device configuration in config data store. Optionally specify a node-id to see a single node.')
     .action(function(args, callback) {
       var self = this;
       var node_id = "";
@@ -339,11 +419,9 @@ vorpal
 
       request
         .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/uniconfig/' + node_id)
-
         .auth(odl_user, odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/json')
-
         .end(function (err, res) {
 
           if (err || !res.ok) {
@@ -363,7 +441,6 @@ vorpal
             self.log(err);
             });
 
-
         });
         callback();
     });
@@ -371,7 +448,7 @@ vorpal
 
 vorpal
       .command('show uniconfig operational [node_id]')
-      .description('Display device configuration in operational data store. Optionally specify a node ID to see a single node.')
+      .description('Display device configuration in operational data store. Optionally specify a node-id to see a single node.')
       .action(function(args, callback) {
         var self = this;
         var node_id = "";
@@ -383,11 +460,9 @@ vorpal
 
         request
           .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/uniconfig/' + node_id)
-
           .auth(odl_user, odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
-
           .end(function (err, res) {
 
             if (err || !res.ok) {

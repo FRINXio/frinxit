@@ -25,4 +25,33 @@ module.exports = function (vorpal) {
 
     callback();
   });
+
+
+  vorpal
+    .command('show cluster')
+    .description('Display cluster related information.')
+    .action(function(args, callback) {
+      var self = this;
+      request
+        .get('http://' + odl_ip + ':8181/jolokia/read/org.opendaylight.controller:Category=Shards,name=member-1-shard-inventory-config,type=DistributedConfigDatastore')
+        .auth(odl_user, odl_pass)
+        .accept('application/json')
+        .set('Content-Type', 'application/json')
+        .end(function (err, res) {
+
+          if (err || !res.ok) {
+            self.log('Error code: ' + err.status);
+          } 
+
+          if (res.status == 200) {
+            self.log('Status code: ' + res.status);
+          }
+
+          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+        });
+        callback();
+    });
+
+
 }

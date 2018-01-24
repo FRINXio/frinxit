@@ -559,7 +559,7 @@ vorpal
         var self = this;
 
         request
-          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '-dryrun/yang-ext:mount/journal:read-journal')
+          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli-dryrun/node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
           .auth(odl_user, odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
