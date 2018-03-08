@@ -484,7 +484,7 @@ vorpal
 
       .end(function (err, res) {
         if (err || !res.ok) {
-          self.log('Mount attempt was unsuccessful. Error code: ' + err.status);
+          self.log('Commit attempt was unsuccessful. Error code: ' + err.status);
         } 
 
         if (res.status == 200) {

@@ -31,6 +31,7 @@ type \"tour admin\" to explore FRINX ODL admin commands\n\
 type \"tour cli\" to explore the CLI service module\n\
 type \"tour l3vpn\" to explore the L3VPN service module\n\
 type \"tour l2vpn\" to explore the L2VPN service module\n\
+type \"tour uniconfig\" to explore UniConfig\n\
 type \"help\" to explore CLI commands\n\
 \n\
 \n\
@@ -48,15 +49,15 @@ type \"help\" to explore CLI commands\n\
 +------v------+    +------v------+    +------v------+    +------v------+\n\
 | IOS classic |    |   IOS XRv   |    |   IOS XRv   |    | IOS classic |\n\
 |    CE01     +----+    PE01     +----+    PE02     +----+    CE02     |\n\
-|192.168.1.122|    |192.168.1.111|    |192.168.1.112|    |192.168.1.121|\n\
+|192.168.1.121|    |192.168.1.111|    |192.168.1.112|    |192.168.1.122|\n\
 +-------------+    +-------------+    +-------------+    +-------------+\n\
 \n\
 ************************************************************************";
 
 exports.welcome_banner = welcome_banner;
 
-// if you start frinxit with the argument 'playground' teh banner will be displayed
-// e.g. node frinxit.js playground
+// if you start frinxit with the argument 'playground' the banner will be displayed
+// e.g. "node frinxit.js playground"
 // will display the banner at startup
 
 if (process.argv.slice(2) == 'playground') {
@@ -78,6 +79,7 @@ vorpal
   .use(require('./tour_cli_01.js'))
   .use(require('./tour_l3vpn_01.js'))
   .use(require('./tour_l2vpn_01.js'))
+  .use(require('./tour_uniconfig_01.js'))
   .use(less)
   .use(grep)
   .show();
