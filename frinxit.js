@@ -27,12 +27,12 @@ exports.rpad;
 const welcome_banner = "************************************************************************\n\
 Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
 \n\
-type \"tour admin\" to explore FRINX ODL admin commands\n\
-type \"tour cli\" to explore the CLI service module\n\
+type \"tour uniconfig\" to explore UniConfig\n\
 type \"tour l3vpn\" to explore the L3VPN service module\n\
 type \"tour l2vpn\" to explore the L2VPN service module\n\
-type \"tour uniconfig\" to explore UniConfig\n\
-type \"help\" to explore CLI commands\n\
+type \"tour admin\" to explore FRINX ODL admin commands\n\
+type \"tour cli\" to explore the CLI service module\n\
+type \"help\" to explore frinxit commands\n\
 \n\
 \n\
                            +---------------+\n\

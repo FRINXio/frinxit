@@ -769,6 +769,39 @@ vorpal
   });
 
 
+   vorpal
+      .command('demo delete ospf_1 <node_id>')
+      .description('Deletes ospf process 1 on <node-id> via NETCONF command (requires IOS XR 6.1 or higher).')
+      .action(function(args, callback) {
+        var self = this;
+        var cli_command = "conf t\n\
+no router ospf 1\n\
+commit\n\
+exit\n }}"
+
+        request
+          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '/yang-ext:mount/cli-unit-generic:execute-and-read')
+          //http://{{odl_ip}}:8181/           restconf/operations/network-topology:network-topology/topology/cli/node/{{node_id}}         /yang-ext:mount/cli-unit-generic:execute-and-read
+          .auth(odl_user, odl_pass)
+          .accept('application/json')
+          .set('Content-Type', 'application/json')
+
+          .send({ "input" : { "ios-cli:command" : cli_command }})
+
+          .end(function (err, res) {
+
+            if (err || !res.ok) {
+              self.log('Error code: ' + err.status);
+            } 
+
+            if (res.status == 200) {
+              self.log('Status code: ' + res.status);
+            }
+
+          });
+          callback();
+      }); 
+
 }
 
 
