@@ -95,8 +95,8 @@ place where all things related to a domain or a feature are stored. There is a t
         //.reject('Uh.. Let\'s type "show cli operational" instead..')
         .wait(500)
         .end('\nThis output shows you the operational state of CLI plugin and the CLI devices that it connects to. You can also get information \
-from a specific node, by adding the node id like this \"show cli operational CE01\". Repeat entering \"show cli operational\"" (hit the up key on your cursor pad\
-to get the last command again on the prompt) until you see both devices are listed with host status: \"connected\".\n');
+from a specific node, by adding the node id like this \"show cli operational CE01\". Repeat entering \"show cli operational\"" (hit the up key\
+ on your cursor pad to get the last command again on the prompt) until you see both devices are listed with host status: \"connected\".\n');
 
       // A delay in millis between steps.
       tour.wait(1000);
@@ -129,7 +129,7 @@ When we mount the device we apply a sync from device reconciliation and copy the
         //.reject('Uh.. Let\'s type "show uniconfig config" instead...')
         .wait(500)
         .end('\nYou can use the \"grep\" command to specify lines containing a string. Try the following \"show uniconfig config | grep node-id\".\
-This will show you only the lines containing the string \nnode-id\n.\n');
+This will show you only the lines containing the string \"node-id\".\n');
 
       // A delay in millis between steps.
       tour.wait(1000);
@@ -261,13 +261,13 @@ is present on the device (i.e. in the operational data store), but not in the co
 
 // delete devices
       tour.step(60)
-        .begin('PLease copy and paste the following lines to delete the devices from ODL and restore the lab to its original state. Please type:\
-          \n\n"delete cli CE01"\n\
+        .begin('Please copy and paste the following lines to delete the devices from ODL and restore the lab to its original state. Please type:\
+          \n\n\"delete cli CE01\n\
 delete cli PE01CLI\n\
-delete nc-device PE01\n\
+delete nc-device PE01\"\n\
           \n')
         .expect("command", function (data, cb) {
-          cb(data.command === 'delete cli CE01"\n\
+          cb(data.command === 'delete cli CE01\n\
 delete cli PE01CLI\n\
 delete nc-device PE01');
         })
@@ -285,7 +285,6 @@ delete nc-device PE01');
       return tour;
     }
   });
-
 
 
 }
