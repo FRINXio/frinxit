@@ -511,7 +511,7 @@ vorpal
     .action(function(args, callback) {
       var self = this;
       request
-        .get('http://' + odl_ip + ':8181/restconf/operational/ietf-l3vpn-svc:configured-l3vpn-svc')
+        .get('http://' + odl_ip + ':8181/restconf/operational/ietf-l3vpn-svc:l3vpn-svc')
 
         .auth(odl_user, odl_pass)
         .accept('application/json')
