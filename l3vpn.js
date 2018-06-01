@@ -190,13 +190,13 @@ vorpal
     
       //hack default settings
     if (typeof args.customer_as == 'undefined' ) 
-      { args.customer_as = "65000"; };
+      { args.customer_as = "65111"; };
 
     if (typeof args.route_distinguisher == 'undefined' ) 
-      { args.route_distinguisher = "10"; };
+      { args.route_distinguisher = args.customer_as + ":10"; };
 
     if (typeof args.route_target == 'undefined' ) 
-      { args.route_target = "22" };
+      { args.route_target = args.customer_as + ":22" };
 
     request
       .put('http://' + odl_ip + ':8181/restconf/config/ietf-l3vpn-svc:l3vpn-svc/vpn-services/vpn-service/' + args.vpn_id)
@@ -209,28 +209,20 @@ vorpal
               "vpn-service":[\
                 {\
                   "vpn-id":"'+ args.vpn_id +'",\
-                  "customer-name":"Customer name",\
+                  "customer-name":"'+ args.vpn_id +'",\
                   "vpn-service-topology":"any-to-any",\
                   "l3vpn-param:vrf-name":"' + args.vpn_id + '",\
-                  "l3vpn-param:route-distinguisher":{\
-                    "as":' + args.customer_as + ',\
-                    "as-index":' + args.route_distinguisher + '\
-                  },\
+                  "l3vpn-param:route-distinguisher":"'+ args.route_distinguisher +'",\
                   "l3vpn-param:import-route-targets":{\
-                    "route-target":{\
-                      "as":' + args.customer_as + ',\
-                      "as-index":' + args.route_target + '\
-                    }\
+                    "route-target":"'+ args.route_target +'"\
                   },\
                   "l3vpn-param:export-route-targets":{\
-                    "route-target":{\
-                      "as":' + args.customer_as + ',\
-                      "as-index":' + args.route_target + '\
-                    }\
+                    "route-target":"'+ args.route_target +'"\
                   }\
                 }\
               ]\
             }')
+
 
       .end(function (err, res) {
               if (err || !res.ok) {
@@ -252,6 +244,10 @@ vorpal
             });
             callback();
         });
+
+
+
+
 
 vorpal
   .command('delete l3vpn vpn <vpn_id>')
@@ -374,6 +370,120 @@ vorpal
                 "site-network-accesses":{\
                   "site-network-access":[\
                     {\
+                      "l3vpn-param:pe-bgp-as":' + answers.pe_bgp_as + ',\
+                      "l3vpn-param:pe-bgp-router-id":"' + answers.pe_id + '",\
+                      "l3vpn-param:route-policy-in":"' + answers.rpl_in + '",\
+                      "l3vpn-param:route-policy-out":"' + answers.rpl_out + '",\
+                      "site-network-access-id":"' + answers.site_id + '",\
+                      "bearer": {\
+                        "bearer-reference": "' + answers.pe_id + ":" + answers.pe_iface_id + '"\
+                      },\
+                      "site-network-access-type":"multipoint",\
+                      "vpn-attachment":{\
+                        "vpn-id":"' + answers.vpn_id + '",\
+                        "site-role":"any-to-any-role"\
+                      },\
+                      "routing-protocols":{\
+                        "routing-protocol":[\
+                          {\
+                            "type":"bgp",\
+                            "bgp":{\
+                              "autonomous-system":' + answers.ce_bgp_as + ',\
+                              "address-family":[\
+                                "ipv4"\
+                              ]\
+                            }\
+                          }\
+                        ]\
+                      },\
+                      "ip-connection":{\
+                        "ipv4":{\
+                          "address-allocation-type":"static-address",\
+                          "addresses":{\
+                            "provider-address":"' + answers.pe_iface_ip + '",\
+                            "customer-address":"' + answers.ce_iface_ip + '",\
+                            "prefix-length":' + answers.pe_iface_mask + '\
+                          }\
+                        }\
+                      }\
+                    }\
+                  ]\
+                }\
+              }\
+            ]\
+          }')
+
+
+/*
+
+{  
+  "site":[  
+    {  
+      "site-id":"{{{site_id}}}",
+      "site-vpn-flavor":"site-vpn-flavor-single",
+      "management":{  
+        "type":"customer-managed"
+      },
+      "site-network-accesses":{  
+        "site-network-access":[
+          {  
+            "l3vpn-param:pe-bgp-as":{{{pe_as_number}}},
+            "l3vpn-param:pe-bgp-router-id":"{{{pe_bgp_router_id}}}",
+            "l3vpn-param:route-policy-in":"RPL_PASS_ALL",
+            "l3vpn-param:route-policy-out":"RPL_PASS_ALL",
+            "site-network-access-id":"{{{site_id}}}",
+            "bearer": {
+                "bearer-reference": "{{{node_id}}}/{{{pe_ce_interface}}}"
+            },
+            "site-network-access-type":"multipoint",
+            "vpn-attachment":{  
+              "vpn-id":"{{{customer_id}}}",
+              "site-role":"any-to-any-role"
+            },
+            "routing-protocols":{  
+              "routing-protocol":[  
+                {  
+                  "type":"bgp",
+                  "bgp":{  
+                    "autonomous-system":{{{ce_as_number}}},
+                    "address-family":[  
+                      "ipv4"
+                    ]
+                  }
+                }
+              ]
+            },
+            "ip-connection":{  
+                "ipv4":{  
+                  "address-allocation-type":"static-address",
+                  "addresses":{  
+                    "provider-address":"{{{pe_ip_address}}}",
+                    "customer-address":"{{{ce_ip_address}}}",
+                    "prefix-length":{{{pe_ip_mask}}}
+                  }
+                }
+              }
+            
+          }
+        ]
+      }
+    }
+  ]
+}
+
+
+old site body
+        .send('{\
+            "site":[\
+              {\
+                "site-id":"' + answers.site_id + '",\
+                "site-vpn-flavor":"site-vpn-flavor-single",\
+                "management":{\
+                  "type":"customer-managed"\
+                },\
+                "site-network-accesses":{\
+                  "site-network-access":[\
+                    {\
                       "site-network-access-id":"' + answers.site_id + '",\
                       "site-network-access-type":"multipoint",\
                       "vpn-attachment":{\
@@ -415,6 +525,7 @@ vorpal
             ]\
           }')
 
+*/
 
         .end(function(err, res) {
           if (err || !res.ok) {

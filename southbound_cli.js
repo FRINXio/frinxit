@@ -5,6 +5,11 @@ var odl_ip = cli.odl_ip;
 var odl_user = cli.odl_user;
 var odl_pass = cli.odl_pass;
 
+const DEFAULT_DRYRUN_JOURNAL_SIZE = 150;
+const DEFAULT_JOURNAL_SIZE = 150;
+const KEEPALIVE_DELAY = 55;
+const KEEPALIVE_INITIAL_DELAY = 55;
+const KEEPALIVE_TIMEOUT = 120;
 
 module.exports = function (vorpal) {
   vorpal
@@ -161,34 +166,39 @@ vorpal
   .description('Mount a CLI device via ssh transport layer. Default transport-type is ssh and default port is 22.')
   .option('-t, --telnet', 'Sets transport type from ssh (default) to telnet')
   .option('-p, --port <port>', 'Change default port from ssh = 22 or telnet = 23')
-  .option('-d, --dry-run <dr_journal_size>', 'set journal size for dry-run')
+  .option('-d, --dryrun <dr_journal_size>', 'set journal size for dry-run')
   .option('-j, --journal <journal_size>', 'set journal size')
   .action(function(args, callback) {
     var self = this;
     var transport_type = 'ssh';
     
       //hack default settings
-    if (typeof args.device_version == 'undefined' ) 
-      { args.device_version = "*"; };
-
-
-    if (typeof args.options.telnet == 'undefined' ) 
-      { transport_type = 'ssh'; 
-        port = args.options.port;
-        if (typeof args.options.port == 'undefined' ) { port = '22'};
+    if ( typeof args.device_version == 'undefined' ) { 
+        args.device_version = "15.2"; 
       };
 
-    if ( args.options.telnet == true ) 
-      { transport_type = 'telnet';
-        port = args.options.port;
-        if (typeof args.options.port == 'undefined' ) { port = '23'};
+    if ( typeof args.options.telnet == 'undefined' ) { 
+        transport_type = 'ssh'; 
+        if (typeof args.options.port == 'undefined' ) 
+          { args.options.port = '22';
+          };
       };
 
-    if ( args.options.dr_journal_size == 'undefined' ) 
-      { args.options.dr_journal_size = 180 };
+    if ( args.options.telnet == true ) { 
+        transport_type = 'telnet';
+        if ( typeof args.options.port == 'undefined' ) 
+          { args.options.port = '23';
+          };
+      };
 
-    if ( args.options.journal_size == 'undefined' ) 
-      { args.options.journal_size = 150 };
+    if ( typeof args.options.dryrun == 'undefined' ) { 
+        args.options.dryrun = DEFAULT_DRYRUN_JOURNAL_SIZE;
+      };
+
+    if ( typeof args.options.journal == 'undefined' ) { 
+        args.options.journal = DEFAULT_JOURNAL_SIZE;
+      };
+
 
 // TODO make dr journal and journal size configurable thru CLI
 
@@ -204,14 +214,17 @@ vorpal
                 {\
                     "network-topology:node-id" : "' + args.node_id + '",\
                     "cli-topology:host" : "' + args.host_ip + '",\
-                    "cli-topology:port" : "' + port + '",\
+                    "cli-topology:port" : "' + args.options.port + '",\
                     "cli-topology:transport-type" : "' + transport_type+ '",\
                     "cli-topology:device-type" : "' + args.device_type + '",\
                     "cli-topology:device-version" : "' + args.device_version + '",\
                     "cli-topology:username" : "' + args.username + '",\
                     "cli-topology:password" : "' + args.password + '",\
-                    "cli-topology:journal-size": "150",\
-                    "cli-topology:dry-run-journal-size": "150"\
+                    "cli-topology:journal-size": "'+ args.options.journal +'",\
+                    "cli-topology:dry-run-journal-size": "'+ args.options.dryrun +'",\
+                    "cli-topology:keepalive-delay": "'+ KEEPALIVE_DELAY +'",\
+                    "cli-topology:keepalive-initial-delay": "'+ KEEPALIVE_INITIAL_DELAY +'",\
+                    "cli-topology:keepalive-timeout": "'+ KEEPALIVE_TIMEOUT +'"\
                 }\
               }')
 
