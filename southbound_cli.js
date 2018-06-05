@@ -162,32 +162,37 @@ Optionally specify a node ID for detailed information about that node.')
       });
 
 vorpal
-  .command('mount cli <node_id> <host_ip> <username> <password> <device_type> [device_version]')
-  .description('Mount a CLI device via ssh transport layer. Default transport-type is ssh and default port is 22.')
+  .command('mount cli <node_id> <host_ip> <username> <password> <device_type>')
+  .description('Mount a CLI device via ssh and telnet transport layer. Default transport-type is ssh and default port is 22. You can \
+find out the supported device types in your version of FRINX ODL by typing: \'show cli translate-registry | grep device-type\'')
   .option('-t, --telnet', 'Sets transport type from ssh (default) to telnet')
   .option('-p, --port <port>', 'Change default port from ssh = 22 or telnet = 23')
   .option('-d, --dryrun <dr_journal_size>', 'set journal size for dry-run')
   .option('-j, --journal <journal_size>', 'set journal size')
+  .option('-v, --device_version <device_version>', 'set specific device version, e.g. \'15.0\' or \'15.2(14)T\'')
+  .types({
+    string: ['v', 'device_version']
+  })
   .action(function(args, callback) {
     var self = this;
     var transport_type = 'ssh';
     
       //hack default settings
-    if ( typeof args.device_version == 'undefined' ) { 
-        args.device_version = "15.2"; 
+    if ( typeof args.options.device_version == 'undefined' ) { 
+        args.options.device_version = "15.2";
       };
 
     if ( typeof args.options.telnet == 'undefined' ) { 
         transport_type = 'ssh'; 
-        if (typeof args.options.port == 'undefined' ) 
-          { args.options.port = '22';
+        if (typeof args.options.port == 'undefined' ) { 
+          args.options.port = '22';
           };
       };
 
     if ( args.options.telnet == true ) { 
         transport_type = 'telnet';
-        if ( typeof args.options.port == 'undefined' ) 
-          { args.options.port = '23';
+        if ( typeof args.options.port == 'undefined' ) { 
+          args.options.port = '23';
           };
       };
 
@@ -199,8 +204,7 @@ vorpal
         args.options.journal = DEFAULT_JOURNAL_SIZE;
       };
 
-
-// TODO make dr journal and journal size configurable thru CLI
+self.log('args.options.device_version: ' + args.options.device_version);
 
     request
       .put('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/node/' + args.node_id)
@@ -217,7 +221,7 @@ vorpal
                     "cli-topology:port" : "' + args.options.port + '",\
                     "cli-topology:transport-type" : "' + transport_type+ '",\
                     "cli-topology:device-type" : "' + args.device_type + '",\
-                    "cli-topology:device-version" : "' + args.device_version + '",\
+                    "cli-topology:device-version" : "' + args.options.device_version + '",\
                     "cli-topology:username" : "' + args.username + '",\
                     "cli-topology:password" : "' + args.password + '",\
                     "cli-topology:journal-size": "'+ args.options.journal +'",\
