@@ -33,13 +33,14 @@ The CLI service module uses YANG models and implements a translation logic to se
 This allows applications to use a service model or unified device model to communicate with a broad range \
 of network platforms and SW revisions from different vendors. \n\
 But first things first. We need to mount the CLI devices that we want to control. Please type or copy/paste the text between quotation marks: \
-          \n\n"mount cli CE01 192.168.1.121 cisco cisco ios" \n\nThis will tell FRINX ODL that it should mount a cli device with the name \
+          \n\n"mount cli CE01 192.168.1.121 cisco cisco ios -v 15.2" \n\nThis will tell FRINX ODL that it should mount a cli device with the name \
 "CE01" and with the ip address 192.168.1.121. The default mount transport protocol is ssh if no options are specified. We also specify \
-the username and password, both "cisco" in this example. Finally, we let FRINX ODL know that this device type is a classic IOS device by specifying "ios".')
+the username and password, both "cisco" in this example. Finally, we let FRINX ODL know that this device type is a classic IOS device by specifying "ios".\
+Please specify the version of the operating system by using the -v option. In this case we specify the version to be used \'15.2\'')
         .expect("command", function (data, cb) {
-          cb(data.command === 'mount cli CE01 192.168.1.121 cisco cisco ios');
+          cb(data.command === 'mount cli CE01 192.168.1.121 cisco cisco ios -v 15.2');
         })
-        .reject('Uh.. Let\'s type "mount cli CE01 192.168.1.121 cisco cisco ios" instead..')
+        .reject('Uh.. Let\'s type "mount cli CE01 192.168.1.121 cisco cisco ios -v 15.2" instead..')
         .wait(500)
         .end('\nNice! We have now successfully mounted our first CLI device.\n');
 
@@ -51,7 +52,7 @@ the username and password, both "cisco" in this example. Finally, we let FRINX O
         .begin('Let\'s mount another CLI device while we are at it. This time we will not use ssh, but we will use telnet. Please type:\
           \n\n"mount cli -t CE02 192.168.1.122 cisco cisco ios"\n\nThe "-t" switch tells FRINX ODL to use telnet instead of ssh transport. \
 You can also specify the port number with the "-p portnumber" option. If you don\'t specify any portnumbers then ssh transport defaults \
-to port 22 and telnet to port 23.')
+to port 22 and telnet to port 23. We do not specify an IOS version and hence use the default 15.0.')
         .expect("command", function (data, cb) {
           cb(data.command === 'mount cli -t CE02 192.168.1.122 cisco cisco ios');
         })
@@ -105,31 +106,14 @@ are supported by each CLI device. If you don\'t specify a node ID you will see a
       // A delay in millis between steps.
       tour.wait(7000);
 
-      tour.step(25)
-        .begin('How about we get some real work done now? The reason why we went through all this hassle up to this point, is to present an \
-abstract, model-based network device and service interface \
-to applications and users. In the next example you see how we parse the CLI output of an IOS command and return \
-structured data. Please type:\
-          \n\n"exec cli show version CE01"\n\n')
-        .expect("command", function (data, cb) {
-          cb(data.command === 'exec cli show version CE01');
-        })
-        .reject('Uh.. Let\'s type "exec cli show version CE01" instead..')
-        .wait(500)
-        .end('\nThis output shows you the structured data that the FRINX CLI plugin has parsed from the CLI device. The data is\
- based on a very simple YANG model that was built for demonstration purposes. In many cases users will use models like OpenConfig that\
- provide standardized access to all kinds of config and operational data independent of network device vendor.\n');
-
-      // A delay in millis between steps.
-      tour.wait(4000);
 
       tour.step(30)
         .begin('Here is another example for getting structured OpenConfig YANG model-based data out of a CLI device. Please type:\
-          \n\n"exec cli show interfaces CE01"\n\n')
+          \n\n"show interface CE01"\n\n')
         .expect("command", function (data, cb) {
-          cb(data.command === 'exec cli show interfaces CE01');
+          cb(data.command === 'show interface CE01');
         })
-        .reject('Uh.. Let\'s type "exec cli show interfaces CE01" instead..')
+        .reject('Uh.. Let\'s type "show interface CE01" instead..')
         .wait(500)
         .end('\nThis output shows you all interfaces configured on the CLI device including their operational status."\n');
 
@@ -140,11 +124,11 @@ structured data. Please type:\
 
        tour.step(32)
         .begin('For a summary view please type:\
-          \n\n"exec cli show interfaces CE01 ipv4"\n\n')
+          \n\n"show interface CE01 ipv4"\n\n')
         .expect("command", function (data, cb) {
-          cb(data.command === 'exec cli show interfaces CE01 ipv4');
+          cb(data.command === 'show interface CE01 ipv4');
         })
-        .reject('Uh.. Let\'s type "exec cli show interfaces CE01 ipv4" instead..')
+        .reject('Uh.. Let\'s type "show interface CE01 ipv4" instead..')
         .wait(500)
         .end('\nThis output shows you all interfaces configured on the CLI device including their operational status in summarized format."\n');
 
@@ -215,12 +199,12 @@ when the device is mounted in FRINX ODL.\n');
       tour.step(55)
         .begin('The FRINX southbound CLI service module also provides dry-run capabilities. Instead of sending a command to the actual \
 device the user can perform a dry-run without any changes to the device and the ability to see the output before any command \
-is sent to the device. You can perform a dry-run by adding \"-dryrun\" to your node-id. Please type:\
-          \n\n"exec cli show version CE01-dryrun"\n\n\ ')
+is sent to the device. The following command demonstrates the dry-run capabilities by creating a loopback interface in dry-run mode. Please type:\
+          \n\n"demo dryrun create loopback CE01"\n\n\ ')
         .expect("command", function (data, cb) {
-          cb(data.command === 'exec cli show version CE01-dryrun');
+          cb(data.command === 'demo dryrun create loopback CE01');
         })
-        .reject('Uh.. Let\'s type "exec cli show version CE01-dryrun" instead..')
+        .reject('Uh.. Let\'s type "demo dryrun create loopback CE01" instead..')
         .wait(500)
         .end('\nThe dry-run command will respond with dummy data, since there was no communication with the actual device.\n');
       // A delay in millis between steps.
@@ -260,6 +244,9 @@ Try: "exec cli command CE01 | grep hostname" and then enter the command you want
       return tour;
     }
   });
+
+
+
 
 
 

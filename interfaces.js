@@ -1,9 +1,12 @@
 var request = require('superagent');
 var interfaces = require('./frinxit.js');
+const util = require('util');
+
 
 var odl_ip = interfaces.odl_ip;
 var odl_user = interfaces.odl_user;
 var odl_pass = interfaces.odl_pass;
+
 
 
 module.exports = function (vorpal) {
@@ -169,86 +172,129 @@ module.exports = function (vorpal) {
 
                       if (interface_item['name'] == key) {
 
-                        for (var j = 0; j < interface_item['subinterfaces']['subinterface'].length; j++) {
-                          subinterface_item =  interface_item['subinterfaces']['subinterface'][j];
+                        //we try to read all subinterfaces
+                        try {
 
-                          //we try to read the ip addresses from the sub-interface
-                          try { 
+                          for (var j = 0; j < interface_item['subinterfaces']['subinterface'].length; j++) {
+                            subinterface_item =  interface_item['subinterfaces']['subinterface'][j];
 
-                            for (var k = 0; k < subinterface_item['frinx-openconfig-if-ip:ipv4']['addresses']['address'].length; k++) {
-                              address_item = subinterface_item['frinx-openconfig-if-ip:ipv4']['addresses']['address'][k];
+                            //we try to read the ip addresses from the sub-interface
+                            try { 
+
+                              for (var k = 0; k < subinterface_item['frinx-openconfig-if-ip:ipv4']['addresses']['address'].length; k++) {
+                                address_item = subinterface_item['frinx-openconfig-if-ip:ipv4']['addresses']['address'][k];
+
+                                //subinterface with index 0 has its operational status in the main interface section
+                                if (interface_item['subinterfaces']['subinterface'][j]['index'] == 0) {
+
+                                  if (interface_item['state']['oper-status'] == "UP") {
+
+                                    self.log(key.rpad(30) + 
+                                      interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                      address_item['ip'].toString().rpad(20) +
+                                      interface_item['state']['oper-status'].green);
+                                  } 
+
+                                  else {
+
+                                    self.log(key.rpad(30) + 
+                                      interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                      address_item['ip'].toString().rpad(20) + 
+                                      interface_item['state']['oper-status'].red);
+                                  }
+                                // for all other subinterfcae > index 0 we need to look into the subinterface section
+                                } 
+
+                                else { 
+
+                                  if (interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'] == "UP") {
+
+                                    self.log(key.rpad(30) + 
+                                      interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                      address_item['ip'].toString().rpad(20) +
+                                      interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].green);
+
+                                  } 
+
+                                  else {
+
+                                    self.log(key.rpad(30) + 
+                                      interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                      address_item['ip'].toString().rpad(20) +
+                                      interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].red);
+                                  }
+                                }
+                              }
+                            }
+                            // we go down this path if we have failed to read an ip address, because there is none configured
+                            catch (err) {
 
                               //subinterface with index 0 has its operational status in the main interface section
                               if (interface_item['subinterfaces']['subinterface'][j]['index'] == 0) {
 
                                 if (interface_item['state']['oper-status'] == "UP") {
 
-                                self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                  address_item['ip'].toString().rpad(20) +
-                                  interface_item['state']['oper-status'].green);
+                                  self.log(key.rpad(30) + 
+                                    interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                    "n/a".rpad(20) +
+                                    interface_item['state']['oper-status'].green);
 
-                                } else {
+                                } 
 
-                                    self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                      address_item['ip'].toString().rpad(20) +
+                                else {
+
+                                    self.log(key.rpad(30) + 
+                                      interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                      "n/a".rpad(20) +
                                       interface_item['state']['oper-status'].red);
                                 }
-                              // for all other subinterfcae > index 0 we need to look into the subinterface section
-                              } else { 
+                              } 
 
-                                  if (interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'] == "UP") {
-
-                                  self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                    address_item['ip'].toString().rpad(20) +
-                                    interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].green);
-
-                                  } else {
-
-                                      self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                        address_item['ip'].toString().rpad(20) +
-                                        interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].red);
-                                  }
-                                }
-                            }
-                          }
-                          // we go down this path if we have failed to read an ip address, because there is none configured
-                          catch (err) {
-                            //subinterface with index 0 has its operational status in the main interface section
-                            if (interface_item['subinterfaces']['subinterface'][j]['index'] == 0) {
-
-                              if (interface_item['state']['oper-status'] == "UP") {
-
-                              self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                "n/a".rpad(20) +
-                                interface_item['state']['oper-status'].green);
-
-                              } else {
-
-                                  self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                    "n/a".rpad(20) +
-                                    interface_item['state']['oper-status'].red);
-                              }
-
-                            } else { // for all other subinterfcae > index 0 we need to look into the subinterface section
+                              else { // for all other subinterfcae > index 0 we need to look into the subinterface section
 
                                 if (interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'] == "UP") {
 
-                                self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                  "n/a".rpad(20) +
-                                  interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].green);
+                                  self.log(key.rpad(30) + 
+                                    interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                    "n/a".rpad(20) +
+                                    interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].green);
+                                } 
 
-                                } else {
+                                else {
 
-                                    self.log(key.rpad(30) + interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
-                                      "n/a".rpad(20) +
-                                      interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].red);
+                                  self.log(key.rpad(30) + 
+                                    interface_item['subinterfaces']['subinterface'][j]['index'].toString().rpad(10) +
+                                    "n/a".rpad(20) +
+                                    interface_item['subinterfaces']['subinterface'][j]['state']['oper-status'].red);
                                 }
                               }
+                            }
+                          }
+                        } 
+                        //in case there is no subinterface we will read the main interface
+                        catch (err) {
+
+                          //self.log(util.inspect(interface_item, false, null));
+
+                          if (interface_item['state']['oper-status'] == "UP") {
+
+                            self.log(key.rpad(30) + 
+                              "n/a".rpad(10) + 
+                              "n/a".rpad(20) + 
+                              interface_item['state']['oper-status'].green);
+                          } 
+                          
+                          else {
+
+                            self.log(key.rpad(30) + 
+                              "n/a".rpad(10) + 
+                              "n/a".rpad(20) + 
+                              interface_item['state']['oper-status'].red);
                           }
                         }
                       }
                     }                    
-                  } 
+                  }
 
                 break;
 
@@ -262,7 +308,5 @@ module.exports = function (vorpal) {
           callback();
       });  
 
-
 }
-
 
