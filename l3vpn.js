@@ -299,6 +299,12 @@ vorpal
       },
       {
         type: 'input',
+        name: 'pe_ip',
+        default: '192.168.1.111',
+        message: 'PE node IP: '
+      },
+      {
+        type: 'input',
         name: 'pe_id',
         default: 'PE01',
         message: 'PE node ID: '
@@ -371,12 +377,12 @@ vorpal
                   "site-network-access":[\
                     {\
                       "l3vpn-param:pe-bgp-as":' + answers.pe_bgp_as + ',\
-                      "l3vpn-param:pe-bgp-router-id":"' + answers.pe_id + '",\
+                      "l3vpn-param:pe-bgp-router-id":"' + answers.pe_ip + '",\
                       "l3vpn-param:route-policy-in":"' + answers.rpl_in + '",\
                       "l3vpn-param:route-policy-out":"' + answers.rpl_out + '",\
                       "site-network-access-id":"' + answers.site_id + '",\
                       "bearer": {\
-                        "bearer-reference": "' + answers.pe_id + ":" + answers.pe_iface_id + '"\
+                        "bearer-reference": "' + answers.pe_id + "/" + answers.pe_iface_id + '"\
                       },\
                       "site-network-access-type":"multipoint",\
                       "vpn-attachment":{\
