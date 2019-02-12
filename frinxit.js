@@ -5,9 +5,12 @@ const less = require('vorpal-less');
 const grep = require('vorpal-grep');
 
 var current_delimiter = 'frinxit';
-var odl_ip = '127.0.0.1';
-var odl_user = "admin";
-var odl_pass = "admin";
+
+global.odl_ip = '127.0.0.1';
+global.odl_user = "admin";
+global.odl_pass = "admin";
+
+exports.rpad;
 
 // FRINXIT will read an environmnent variable "odl_target" from its host and if it is set 
 // it will use that IP address as a default host address for all REST calls towards ODL.
@@ -15,54 +18,9 @@ var odl_pass = "admin";
 // The user can change the host address at any time by using the "logon odl" command.
 
 if (process.env.odl_target){    
-  odl_ip = process.env.odl_target;
-//  console.log('odl_ip = ' + odl_ip)
+  global.odl_ip = process.env.odl_target;
+//  console.log('global.odl_ip = ' + global.odl_ip)
 };
-
-exports.odl_ip = odl_ip;
-exports.odl_user = odl_user;
-exports.odl_pass = odl_pass;
-exports.rpad;
-
-const welcome_banner = "************************************************************************\n\
-Welcome to frinxit, the command line tool for the FRINX ODL Distribution\n\
-\n\
-type \"tour uniconfig\" to explore UniConfig\n\
-type \"tour l3vpn\" to explore the L3VPN service module\n\
-type \"tour l2vpn\" to explore the L2VPN service module\n\
-type \"tour admin\" to explore FRINX ODL admin commands\n\
-type \"tour cli\" to explore the CLI service module\n\
-type \"help\" to explore frinxit commands\n\
-\n\
-\n\
-                           +---------------+\n\
-                           |  FRINXIT CLI  |\n\
-                           +-------+-------+\n\
-                                   |\n\
-                           +-------v-------+\n\
-                           |   FRINX ODL   |\n\
-                           |               +\n\
-                           +-------+-------+\n\
-                                   |\n\
-       +--------------------------------------------------------+\n\
-       |                  |                  |                  |\n\
-+------v------+    +------v------+    +------v------+    +------v------+\n\
-| IOS classic |    |   IOS XRv   |    |   IOS XRv   |    | IOS classic |\n\
-|    CE01     +----+    PE01     +----+    PE02     +----+    CE02     |\n\
-|192.168.1.121|    |192.168.1.111|    |192.168.1.112|    |192.168.1.122|\n\
-+-------------+    +-------------+    +-------------+    +-------------+\n\
-\n\
-************************************************************************";
-
-exports.welcome_banner = welcome_banner;
-
-// if you start frinxit with the argument 'playground' the banner will be displayed
-// e.g. "node frinxit.js playground"
-// will display the banner at startup
-
-if (process.argv.slice(2) == 'playground') {
-  console.log(welcome_banner);
-}
 
 
 vorpal
@@ -84,6 +42,7 @@ vorpal
   .use(grep)
   .show();
 
+
 vorpal
   .command('logon <node_name>')
   .description('Connects to an ODL node.')
@@ -92,7 +51,8 @@ vorpal
       var self = this;
       this.log('Connecting to ' + args.node_name);
       current_delimiter = args.node_name;
-      odl_ip = args.node_name;
+      global.odl_ip = args.node_name;
+      global.test_ip = args.node_name;
       this.delimiter('<' + current_delimiter + '>$');
       this.prompt([
         {
@@ -107,8 +67,8 @@ vorpal
         }
         ], function (answers) {
           if (answers.username) {
-            odl_user = answers.username;
-            odl_pass = answers.password;
+            global.odl_user = answers.username;
+            global.odl_pass = answers.password;
           }
         callback();
       });
@@ -120,9 +80,9 @@ vorpal
   .description('Discconnects from an ODL node.')
   .alias('logo')
   .action(function(args, callback) {
-    odl_ip = '';
-    odl_user = '';
-    odl_pass = '';
+    global.odl_ip = '';
+    global.odl_user = '';
+    global.odl_pass = '';
     current_delimiter = 'frinxit';
     vorpal.delimiter('frinxit$').show();
     callback();
@@ -133,7 +93,6 @@ vorpal
   .command('test odl connectivity', 'Tests connectivity to host and port 8181. \
   You need to be logged on to an ODL node for the test to succeed. Also see \
   command "logon"')
-
   .action(function(args, callback) {
     var self = this;
 
@@ -144,8 +103,8 @@ vorpal
     }
 
     request
-      .get('http://' + odl_ip + ':8181/restconf/modules')
-      .auth(odl_user, odl_pass)
+      .get('http://' + global.odl_ip + ':8181/restconf/modules')
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -178,8 +137,8 @@ vorpal
     var self = this;
     //var node_id = args.node_id;
     request
-      .delete('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
-      .auth(odl_user, odl_pass)
+      .delete('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -220,9 +179,9 @@ vorpal
       else { keepalive_delay = args.options.keepalive_delay; };
 
     request
-      .put('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
+      .put('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
 
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/xml')
       .set('Content-Type', 'application/xml')
 
@@ -271,9 +230,9 @@ vorpal
     }
 
     request
-      .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/' + node_string)
+      .get('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/topology-netconf/' + node_string)
 
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -306,9 +265,9 @@ vorpal
       if (args.node_id) {
 
         request
-          .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
+          .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/node/' + args.node_id)
 
-          .auth(odl_user, odl_pass)
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -329,9 +288,9 @@ vorpal
       } else {
 
             request
-              .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/')
+              .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/topology-netconf/')
 
-              .auth(odl_user, odl_pass)
+              .auth(global.odl_user, global.odl_pass)
               .accept('application/json')
               .set('Content-Type', 'application/json')
 
@@ -381,11 +340,11 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/' + 
+      .get('http://' + global.odl_ip + ':8181/restconf/operational/' + 
         'network-topology:network-topology/topology/topology-netconf/' + 
         'node/' + args.node_name + '/yang-ext:mount')
 
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -415,9 +374,9 @@ vorpal
   var self = this;
   
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology')
+      .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology')
 
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 

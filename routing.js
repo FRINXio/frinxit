@@ -1,10 +1,6 @@
 var request = require('superagent');
 var bgp = require('./frinxit.js');
 
-var odl_ip = bgp.odl_ip;
-var odl_user = bgp.odl_user;
-var odl_pass = bgp.odl_pass;
-
 
 module.exports = function (vorpal) {
 
@@ -15,9 +11,9 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/unified/node/' +
+      .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/unified/node/' +
         args.node_id + '/yang-ext:mount/frinx-openconfig-network-instance:network-instances/network-instance/default/protocols/protocol/frinx-openconfig-policy-types:BGP/default/')
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -49,9 +45,9 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
+      .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
         args.node_id + '/yang-ext:mount/frinx-openconfig-rib-bgp:bgp-rib')
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -81,9 +77,9 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
+      .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
         args.node_id + '/yang-ext:mount/frinx-openconfig-network-instance:network-instances/network-instance/default/protocols/protocol/frinx-openconfig-policy-types:STATIC/default')
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -112,9 +108,9 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
+      .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' +
         args.node_id + '/yang-ext:mount/frinx-openconfig-network-instance:network-instances')
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 

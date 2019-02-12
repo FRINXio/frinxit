@@ -4,10 +4,6 @@ var xml2jsParser = require('superagent-xml2jsparser');
 var fs = require('fs');
 var path = require('path');
 
-var odl_ip = cli.odl_ip;
-var odl_user = cli.odl_user;
-var odl_pass = cli.odl_pass;
-
 
 const FILENAME_CONFIG = "uni_config.json";
 const FILENAME_OPERATIONAL = "uni_operational.json";
@@ -35,8 +31,8 @@ If you want to sync multiple nodes from the network to the operational data stor
         }
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:sync-from-network')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:sync-from-network')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -74,8 +70,8 @@ vorpal
         var self = this;
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-operational')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-operational')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -116,8 +112,8 @@ vorpal
         var self = this;
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-snapshot')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:replace-config-with-snapshot')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -166,8 +162,8 @@ If you want to commit to a subset of nodes type: \"commit uniconfig \"IOS01, IOS
         }
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:commit')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:commit')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -211,8 +207,8 @@ If you want to commit to a subset of nodes type: \"commit uniconfig dry-run \"IO
         }
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/dryrun-manager:dryrun-commit')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/dryrun-manager:dryrun-commit')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -249,8 +245,8 @@ vorpal
         var self = this;
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:create-snapshot')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:create-snapshot')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -287,8 +283,8 @@ vorpal
         var self = this;
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:delete-snapshot')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:delete-snapshot')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -334,8 +330,8 @@ vorpal
         }
 
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/uniconfig-manager:calculate-diff')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:calculate-diff')
+        .auth(global.odl_user, global.odl_pass)
         .accept('xml')
         .parse(xml2jsParser)
         .set('Content-Type', 'application/JSON')
@@ -418,8 +414,8 @@ vorpal
         { node_id = "node/" + args.node_id}
 
       request
-        .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/uniconfig/' + node_id)
-        .auth(odl_user, odl_pass)
+        .get('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/uniconfig/' + node_id)
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -459,8 +455,8 @@ vorpal
           { node_id = "node/" + args.node_id}
 
         request
-          .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/uniconfig/' + node_id)
-          .auth(odl_user, odl_pass)
+          .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/uniconfig/' + node_id)
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
           .end(function (err, res) {
@@ -498,8 +494,8 @@ vorpal
         if (args.name == '') {
 
           request
-            .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology?depth=2')
-            .auth(odl_user, odl_pass)
+            .get('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology?depth=2')
+            .auth(global.odl_user, global.odl_pass)
             .accept('application/json')
             .set('Content-Type', 'application/json')
             .end(function (err, res) {
@@ -531,8 +527,8 @@ vorpal
         else {
 
           request
-            .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/' + args.name)
-            .auth(odl_user, odl_pass)
+            .get('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/' + args.name)
+            .auth(global.odl_user, global.odl_pass)
             .accept('application/json')
             .set('Content-Type', 'application/json')
             .end(function (err, res) {
@@ -606,8 +602,8 @@ vorpal
 
     readFile(cliPath).then(function (data){
       request
-        .put('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/uniconfig')
-        .auth(odl_user, odl_pass)
+        .put('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/uniconfig')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .send(data.toString('utf8'))

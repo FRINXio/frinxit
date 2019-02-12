@@ -3,12 +3,6 @@ var interfaces = require('./frinxit.js');
 const util = require('util');
 
 
-var odl_ip = interfaces.odl_ip;
-var odl_user = interfaces.odl_user;
-var odl_pass = interfaces.odl_pass;
-
-
-
 module.exports = function (vorpal) {
   
   vorpal
@@ -19,10 +13,10 @@ module.exports = function (vorpal) {
         var self = this;
 
         request
-          .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' 
+          .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' 
             + args.node_id + '/yang-ext:mount/ios-essential:version')
 
-          .auth(odl_user, odl_pass)
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -49,10 +43,10 @@ module.exports = function (vorpal) {
         var self = this;
 
         request
-          .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/unified/node/' 
+          .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/unified/node/' 
             + args.node_id + '/yang-ext:mount/frinx-openconfig-interfaces:interfaces')
 
-          .auth(odl_user, odl_pass)
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 

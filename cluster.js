@@ -3,11 +3,6 @@ var l3vpn = require('./frinxit.js');
 var colors = require('colors');
 
 
-var odl_ip = l3vpn.odl_ip;
-var odl_user = l3vpn.odl_user;
-var odl_pass = l3vpn.odl_pass;
-
-
 module.exports = function (vorpal) {
   vorpal
   .command('show colors')
@@ -33,8 +28,8 @@ module.exports = function (vorpal) {
     .action(function(args, callback) {
       var self = this;
       request
-        .get('http://' + odl_ip + ':8181/jolokia/read/org.opendaylight.controller:Category=Shards,name=member-1-shard-inventory-config,type=DistributedConfigDatastore')
-        .auth(odl_user, odl_pass)
+        .get('http://' + global.odl_ip + ':8181/jolokia/read/org.opendaylight.controller:Category=Shards,name=member-1-shard-inventory-config,type=DistributedConfigDatastore')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -47,7 +42,9 @@ module.exports = function (vorpal) {
             self.log('Status code: ' + res.status);
           }
 
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+          //self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+
+          self.log(res.text);
 
         });
         callback();

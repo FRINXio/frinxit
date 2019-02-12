@@ -1,9 +1,6 @@
 var request = require('superagent');
 var cli = require('./frinxit.js');
 
-var odl_ip = cli.odl_ip;
-var odl_user = cli.odl_user;
-var odl_pass = cli.odl_pass;
 
 const DEFAULT_DRYRUN_JOURNAL_SIZE = 150;
 const DEFAULT_JOURNAL_SIZE = 150;
@@ -18,9 +15,9 @@ module.exports = function (vorpal) {
     .action(function(args, callback) {
       var self = this;
       request
-        .get('http://' + odl_ip + ':8181/restconf/operational/cli-translate-registry:available-cli-device-translations')
+        .get('http://' + global.odl_ip + ':8181/restconf/operational/cli-translate-registry:available-cli-device-translations')
 
-        .auth(odl_user, odl_pass)
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/json')
 
@@ -52,9 +49,9 @@ Optionally specify a node ID for detailed information about that node.')
         if (typeof args.node_id == 'undefined' ) {
 
           request
-            .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/')
+            .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/')
 
-            .auth(odl_user, odl_pass)
+            .auth(global.odl_user, global.odl_pass)
             .accept('application/json')
             .set('Content-Type', 'application/json')
 
@@ -100,9 +97,9 @@ Optionally specify a node ID for detailed information about that node.')
           node_id = "node/" + args.node_id;
 
           request
-            .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/' + node_id)
+            .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/' + node_id)
 
-            .auth(odl_user, odl_pass)
+            .auth(global.odl_user, global.odl_pass)
             .accept('application/json')
             .set('Content-Type', 'application/json')
 
@@ -139,9 +136,9 @@ Optionally specify a node ID for detailed information about that node.')
           { node_id = "node/" + args.node_id}
 
         request
-          .get('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/' + node_id)
+          .get('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/' + node_id)
 
-          .auth(odl_user, odl_pass)
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -205,9 +202,9 @@ find out the supported device types in your version of FRINX ODL by typing: \'sh
       };
 
     request
-      .put('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/node/' + args.node_id)
+      .put('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/node/' + args.node_id)
 
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -259,8 +256,8 @@ vorpal
     var self = this;
     //var node_id = args.node_id;
     request
-      .delete('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/node/' + args.node_id)
-      .auth(odl_user, odl_pass)
+      .delete('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli/node/' + args.node_id)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 
@@ -289,10 +286,10 @@ vorpal
         var self = this;
 
         request
-          .get('http://' + odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' 
+          .get('http://' + global.odl_ip + ':8181/restconf/operational/network-topology:network-topology/topology/cli/node/' 
             + args.node_id + '/yang-ext:mount/ios-essential:version')
 
-          .auth(odl_user, odl_pass)
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -320,8 +317,8 @@ vorpal
         var self = this;
 
         request
-          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
-          .auth(odl_user, odl_pass)
+          .post('http://' + global.odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -351,8 +348,8 @@ vorpal
         var self = this;
 
         request
-          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli-dryrun/node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
-          .auth(odl_user, odl_pass)
+          .post('http://' + global.odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli-dryrun/node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -391,10 +388,10 @@ vorpal
       ], function(answers) {
 
         request
-          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' 
+          .post('http://' + global.odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' 
             + args.node_id + '/yang-ext:mount/cli-unit-generic:execute-and-read')
 
-          .auth(odl_user, odl_pass)
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -432,8 +429,8 @@ commit\n\
 exit\n }}"
 
         request
-          .post('http://' + odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '/yang-ext:mount/cli-unit-generic:execute-and-read')
-          .auth(odl_user, odl_pass)
+          .post('http://' + global.odl_ip + ':8181/restconf/operations/network-topology:network-topology/topology/cli/node/' + args.node_id + '/yang-ext:mount/cli-unit-generic:execute-and-read')
+          .auth(global.odl_user, global.odl_pass)
           .accept('application/json')
           .set('Content-Type', 'application/json')
 
@@ -462,10 +459,10 @@ vorpal
     var interface_name = "Loopback789";
 
     request
-      .put('http://' + odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli-dryrun/node/' 
+      .put('http://' + global.odl_ip + ':8181/restconf/config/network-topology:network-topology/topology/cli-dryrun/node/' 
         + args.node_id + '/yang-ext:mount/frinx-openconfig-interfaces:interfaces/interface/' + interface_name)
 
-      .auth(odl_user, odl_pass)
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
 

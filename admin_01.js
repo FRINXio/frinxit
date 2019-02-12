@@ -1,10 +1,6 @@
 var request = require('superagent');
 var admin = require('./frinxit.js');
 
-var odl_ip = admin.odl_ip;
-var odl_user = admin.odl_user;
-var odl_pass = admin.odl_pass;
-
 
 module.exports = function (vorpal) {
   vorpal
@@ -13,8 +9,8 @@ module.exports = function (vorpal) {
     .action(function(args, callback) {
       var self = this;
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/installer:show-version')
-        .auth(odl_user, odl_pass)
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/installer:show-version')
+        .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/yang.data+json')
 
@@ -29,11 +25,7 @@ module.exports = function (vorpal) {
           }
 
           var version = JSON.parse(res.text);
-
           self.log(JSON.stringify(version.output, null, 2));
-
-          //logs the entire request and response content
-          //self.log(res.req);
 
         });
         callback();
@@ -47,11 +39,8 @@ module.exports = function (vorpal) {
       var self = this;
       var installed = false;
       request
-        .get('http://' + odl_ip + ':8181/restconf/operational/installer:features')
-        .auth(odl_user, odl_pass)
-        //.accept('application/json, text/plain ,*/*')
-        //.set('Content-Type', 'application/yang.data+json')
-
+        .get('http://' + global.odl_ip + ':8181/restconf/operational/installer:features')
+        .auth(global.odl_user, global.odl_pass)
         .end(function (err, res) {
 
           if (err || !res.ok) {
@@ -98,11 +87,8 @@ module.exports = function (vorpal) {
     .action(function(args, callback) {
       var self = this;
       request
-        .post('http://' + odl_ip + ':8181/restconf/operations/installer:monitor-resources')
-        .auth(odl_user, odl_pass)
-        //.accept('application/json, text/plain ,*/*')
-        //.set('Content-Type', 'application/yang.data+json')
-
+        .post('http://' + global.odl_ip + ':8181/restconf/operations/installer:monitor-resources')
+        .auth(global.odl_user, global.odl_pass)
         .end(function (err, res) {
 
           if (err || !res.ok) {
@@ -112,9 +98,7 @@ module.exports = function (vorpal) {
           if (res.status == 200) {
             self.log('Status code: '.green + res.status);
           }
-
           self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-          //self.log(res.text);
 
         });
         callback();
@@ -128,9 +112,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get('http://' + odl_ip + ':8181/restconf/modules')
-
-      .auth(odl_user, odl_pass)
+      .get('http://' + global.odl_ip + ':8181/restconf/modules')
+      .auth(global.odl_user, global.odl_pass)
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -154,7 +137,5 @@ vorpal
       });
       callback();
   });
-
-
 
 }
