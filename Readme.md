@@ -1,5 +1,10 @@
 # Getting started with Frinxit.js
 
+~~~~
+sudo apt install nodejs
+sudo apt install npm
+~~~~
+
 install node.js & npm on your machine:
 
 [https://nodejs.org/en/download/package-manager/](https://nodejs.org/en/download/package-manager/)
