@@ -64,6 +64,26 @@ var odl_user = "admin";
 var odl_pass = "admin";
 ~~~~
 
+You can conect to an ODL node with a different IP address like this:
+
+~~~~
+frinxit$ logon 192.168.1.50
+Connecting to 192.168.1.50
+Username: admin
+Password: *****
+<192.168.1.50>$ show odl version
+Status code: 200
+{
+  "versions": {
+    "controller-version": "3.1.6.frinx"
+  }
+}
+<192.168.1.50>$ exit
+frinxit$ exit
+gwieser@fmach:~/frinxit$
+~~~~
+
+
 ## Grep and less support
 Frinxit supports pipes to grep and less:
 
