@@ -25,19 +25,12 @@ if (process.env.odl_target){
 
 vorpal
   .delimiter('frinxit$')
-  .use(require('./l3vpn.js'))
-  .use(require('./l2vpn.js'))
   .use(require('./routing.js'))
   .use(require('./cluster.js'))
   .use(require('./southbound_cli.js'))
   .use(require('./interfaces.js'))
   .use(require('./uniconfig_manager.js'))
   .use(require('./admin_01.js'))
-  .use(require('./tour_admin_01.js'))
-  .use(require('./tour_cli_01.js'))
-  .use(require('./tour_l3vpn_01.js'))
-  .use(require('./tour_l2vpn_01.js'))
-  .use(require('./tour_uniconfig_01.js'))
   .use(less)
   .use(grep)
   .show();

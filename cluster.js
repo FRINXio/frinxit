@@ -42,13 +42,10 @@ module.exports = function (vorpal) {
             self.log('Status code: ' + res.status);
           }
 
-          //self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-
           self.log(res.text);
 
         });
         callback();
     });
-
 
 }

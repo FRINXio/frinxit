@@ -333,6 +333,7 @@ vorpal
         .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:calculate-diff')
         .auth(global.odl_user, global.odl_pass)
         .accept('xml')
+	.buffer(true)
         .parse(xml2jsParser)
         .set('Content-Type', 'application/JSON')
         .send('{\
@@ -354,7 +355,7 @@ vorpal
           } 
           if (res.status == 200) {
             self.log("Status code: " + res.status + "\n");
-          }
+	  }
 
           try {
 
@@ -367,8 +368,8 @@ vorpal
                 self.log("---- Created data in config DS compared with operational DS ----");
 
                 try {
-                  for (var j = 0; j < node_list[i]['created-data'].length; j++) {
-                    self.log(node_list[i]['created-data'][j]['data'][0].green);
+                  for (var j = 0; j < node_list[i]['updated-data'].length; j++) {
+                    self.log(node_list[i]['updated-data'][j]['data-intended'][0].green);
                   }
                 }
                 catch (err) {
