@@ -33,7 +33,6 @@ gwieser@fmach:~/frinxit$ npm install superagent vorpal vorpal-less vorpal-grep v
 └── vorpal-tour@0.0.5
 
 gwieser@fmach:~/frinxit$
-
 ~~~~
 
 Get the Frinxit.js code from Github
@@ -58,47 +57,7 @@ var odl_ip = '127.0.0.1';
 var odl_user = "admin";
 var odl_pass = "admin";
 
-if you need to connect to another ip address use the "logon" command:
 
-~~~~
-frinxit$ logon --help
-  Missing required argument. Showing Help:
-  Usage: logon [options] <node_name>
-  Alias: log
-  Connects to an ODL node.
-  Options:
-
-    --help  output usage information
-
-frinxit$ logon 192.168.0.22
-Connecting to 192.168.0.22
-Username: admin
-Password: *****
-<192.168.0.22>$ 
-<192.168.0.22>$ 
-~~~~
-
-This will execute all ODL commands on the new ip address. User/pwd are stored in memory for each call to use with basic authentication.
-
-you can test connectivity to ODL with the following command
-
-~~~~
-frinxit$ logon 192.168.0.22
-Connecting to 192.168.0.22
-Username: admin
-Password: *****
-<192.168.0.22>$ 
-<192.168.0.22>$ test odl connectivity 
-Can not connect to host or port
-<192.168.0.22>$ 
-<192.168.0.22>$ logon 127.0.0.1
-Connecting to 127.0.0.1
-Username: admin
-Password: *****
-<127.0.0.1>$ 
-<127.0.0.1>$ test odl connectivity 
-We have connectivity!
-<127.0.0.1>$ 
 ~~~~
 
 ## Grep and less support
