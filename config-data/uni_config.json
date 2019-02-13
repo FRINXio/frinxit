@@ -1,230 +1,756 @@
 {
-  "node": [
+  "topology": [
     {
-      "node-id": "XE01",
-      "frinx-uniconfig-topology:configuration": {
-        "frinx-openconfig-network-instance:network-instances": {
-          "network-instance": [
-            {
-              "name": "TMP",
-              "protocols": {
-                "protocol": [
-                  {
-                    "identifier": "frinx-openconfig-policy-types:STATIC",
-                    "name": "TMP",
-                    "config": {
-                      "identifier": "frinx-openconfig-policy-types:STATIC",
-                      "name": "TMP"
-                    }
-                  }
-                ]
-              },
-              "config": {
-                "name": "TMP",
-                "type": "frinx-openconfig-network-instance-types:L3VRF"
-              }
-            },
-            {
-              "name": "default",
-              "interfaces": {
-                "interface": [
-                  {
-                    "id": "Loopback97"
-                  },
-                  {
-                    "id": "Loopback888"
-                  },
-                  {
-                    "id": "GigabitEthernet3"
-                  },
-                  {
-                    "id": "GigabitEthernet4"
-                  },
-                  {
-                    "id": "GigabitEthernet1"
-                  },
-                  {
-                    "id": "GigabitEthernet2"
-                  }
-                ]
-              },
-              "config": {
-                "name": "default",
-                "type": "frinx-openconfig-network-instance-types:DEFAULT_INSTANCE"
-              },
-              "protocols": {
-                "protocol": [
-                  {
-                    "identifier": "frinx-openconfig-policy-types:OSPF",
-                    "name": "97",
-                    "config": {
-                      "identifier": "frinx-openconfig-policy-types:OSPF",
-                      "name": "97"
-                    },
-                    "ospfv2": {
-                      "global": {
+      "topology-id": "uniconfig",
+      "topology-types": {
+        "frinx-uniconfig-topology:uniconfig": {}
+      },
+      "node": [
+        {
+          "node-id": "IOS01",
+          "frinx-uniconfig-topology:configuration": {
+            "frinx-openconfig-network-instance:network-instances": {
+              "network-instance": [
+                {
+                  "name": "ab",
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "ab",
                         "config": {
-                          "router-id": "10.255.255.2"
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "ab"
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:BGP",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:BGP",
+                          "name": "default"
+                        },
+                        "bgp": {
+                          "global": {
+                            "config": {
+                              "as": 65000
+                            }
+                          }
                         }
                       }
-                    }
+                    ]
                   },
-                  {
-                    "identifier": "frinx-openconfig-policy-types:STATIC",
+                  "config": {
+                    "route-distinguisher": "22:1",
+                    "name": "ab",
+                    "type": "frinx-openconfig-network-instance-types:L3VRF"
+                  }
+                },
+                {
+                  "name": "cus1_vpn1",
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:BGP",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:BGP",
+                          "name": "default"
+                        },
+                        "bgp": {
+                          "global": {
+                            "config": {
+                              "as": 65000
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "cus1_vpn1",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "cus1_vpn1"
+                        }
+                      }
+                    ]
+                  },
+                  "config": {
+                    "name": "cus1_vpn1",
+                    "type": "frinx-openconfig-network-instance-types:L3VRF"
+                  }
+                },
+                {
+                  "name": "1",
+                  "config": {
+                    "name": "1",
+                    "type": "frinx-openconfig-network-instance-types:L2VSI"
+                  },
+                  "connection-points": {
+                    "connection-point": [
+                      {
+                        "connection-point-id": "remote",
+                        "endpoints": {
+                          "endpoint": [
+                            {
+                              "endpoint-id": "default",
+                              "config": {
+                                "precedence": 0,
+                                "endpoint-id": "default",
+                                "type": "frinx-openconfig-network-instance-types:REMOTE"
+                              },
+                              "remote": {
+                                "config": {
+                                  "virtual-circuit-identifier": 44
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "config": {
+                          "connection-point-id": "remote"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "default",
+                  "interfaces": {
+                    "interface": [
+                      {
+                        "id": "Loopback0"
+                      },
+                      {
+                        "id": "Loopback1"
+                      },
+                      {
+                        "id": "GigabitEthernet3"
+                      },
+                      {
+                        "id": "Loopback44"
+                      },
+                      {
+                        "id": "GigabitEthernet1"
+                      },
+                      {
+                        "id": "GigabitEthernet2"
+                      }
+                    ]
+                  },
+                  "config": {
                     "name": "default",
-                    "config": {
-                      "identifier": "frinx-openconfig-policy-types:STATIC",
-                      "name": "default"
-                    }
+                    "type": "frinx-openconfig-network-instance-types:DEFAULT_INSTANCE"
                   },
-                  {
-                    "identifier": "frinx-openconfig-policy-types:OSPF",
-                    "name": "98",
-                    "config": {
-                      "identifier": "frinx-openconfig-policy-types:OSPF",
-                      "name": "98"
-                    }
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "default"
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:OSPF",
+                        "name": "1",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:OSPF",
+                          "name": "1"
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:BGP",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:BGP",
+                          "name": "default"
+                        },
+                        "bgp": {
+                          "global": {
+                            "afi-safis": {
+                              "afi-safi": [
+                                {
+                                  "afi-safi-name": "frinx-openconfig-bgp-types:L3VPN_IPV4_UNICAST",
+                                  "config": {
+                                    "afi-safi-name": "frinx-openconfig-bgp-types:L3VPN_IPV4_UNICAST"
+                                  }
+                                }
+                              ]
+                            },
+                            "config": {
+                              "as": 65000
+                            }
+                          }
+                        }
+                      }
+                    ]
                   }
-                ]
-              }
+                }
+              ]
+            },
+            "frinx-openconfig-interfaces:interfaces": {
+              "interface": [
+                {
+                  "name": "GigabitEthernet2",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "enabled": true,
+                    "name": "GigabitEthernet2",
+                    "description": "null"
+                  },
+                  "subinterfaces": {
+                    "subinterface": [
+                      {
+                        "index": 0,
+                        "frinx-openconfig-if-ip:ipv6": {
+                          "addresses": {
+                            "address": [
+                              {
+                                "ip": "3::2",
+                                "config": {
+                                  "ip": "3::2",
+                                  "prefix-length": 21
+                                }
+                              },
+                              {
+                                "ip": "2::2",
+                                "config": {
+                                  "ip": "2::2",
+                                  "prefix-length": 111
+                                }
+                              },
+                              {
+                                "ip": "FE80::5",
+                                "config": {
+                                  "ip": "FE80::5",
+                                  "prefix-length": 64
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "GigabitEthernet1",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "name": "GigabitEthernet1",
+                    "enabled": true
+                  }
+                },
+                {
+                  "name": "GigabitEthernet3",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "enabled": true,
+                    "name": "GigabitEthernet3",
+                    "description": "foo"
+                  }
+                },
+                {
+                  "name": "Loopback1",
+                  "config": {
+                    "type": "iana-if-type:softwareLoopback",
+                    "name": "Loopback1",
+                    "enabled": true
+                  }
+                },
+                {
+                  "name": "Loopback0",
+                  "config": {
+                    "type": "iana-if-type:softwareLoopback",
+                    "name": "Loopback0",
+                    "enabled": true
+                  }
+                },
+                {
+                  "name": "Loopback44",
+                  "config": {
+                    "type": "iana-if-type:softwareLoopback",
+                    "name": "Loopback44",
+                    "enabled": true
+                  }
+                }
+              ]
             }
-          ]
+          }
         },
-        "frinx-openconfig-interfaces:interfaces": {
-          "interface": [
-            {
-              "name": "GigabitEthernet2",
-              "config": {
-                "type": "iana-if-type:ethernetCsmacd",
-                "enabled": true,
-                "name": "GigabitEthernet2",
-                "description": "some new text updated for Mariusz"
-              }
-            },
-            {
-              "name": "GigabitEthernet1",
-              "config": {
-                "type": "iana-if-type:ethernetCsmacd",
-                "name": "GigabitEthernet1",
-                "enabled": true
-              },
-              "subinterfaces": {
-                "subinterface": [
-                  {
-                    "index": 0,
-                    "frinx-openconfig-if-ip:ipv4": {
-                      "addresses": {
-                        "address": [
-                          {
-                            "ip": "192.168.56.131",
+        {
+          "node-id": "XE01",
+          "frinx-uniconfig-topology:configuration": {
+            "frinx-openconfig-network-instance:network-instances": {
+              "network-instance": [
+                {
+                  "name": "TMP",
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "TMP",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "TMP"
+                        }
+                      }
+                    ]
+                  },
+                  "config": {
+                    "name": "TMP",
+                    "type": "frinx-openconfig-network-instance-types:L3VRF"
+                  }
+                },
+                {
+                  "name": "default",
+                  "interfaces": {
+                    "interface": [
+                      {
+                        "id": "Loopback97"
+                      },
+                      {
+                        "id": "GigabitEthernet3"
+                      },
+                      {
+                        "id": "GigabitEthernet4"
+                      },
+                      {
+                        "id": "GigabitEthernet1"
+                      },
+                      {
+                        "id": "GigabitEthernet2"
+                      }
+                    ]
+                  },
+                  "config": {
+                    "name": "default",
+                    "type": "frinx-openconfig-network-instance-types:DEFAULT_INSTANCE"
+                  },
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:OSPF",
+                        "name": "97",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:OSPF",
+                          "name": "97"
+                        },
+                        "ospfv2": {
+                          "global": {
                             "config": {
-                              "ip": "192.168.56.131",
-                              "prefix-length": 24
+                              "router-id": "10.255.255.2"
                             }
                           }
-                        ]
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "default"
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:OSPF",
+                        "name": "98",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:OSPF",
+                          "name": "98"
+                        }
                       }
-                    }
+                    ]
                   }
-                ]
-              }
+                }
+              ]
             },
-            {
-              "name": "GigabitEthernet4",
-              "config": {
-                "type": "iana-if-type:ethernetCsmacd",
-                "name": "GigabitEthernet4",
-                "enabled": true
-              },
-              "subinterfaces": {
-                "subinterface": [
-                  {
-                    "index": 0,
-                    "frinx-openconfig-if-ip:ipv4": {
-                      "addresses": {
-                        "address": [
-                          {
-                            "ip": "192.168.1.131",
-                            "config": {
-                              "ip": "192.168.1.131",
-                              "prefix-length": 24
-                            }
+            "frinx-openconfig-interfaces:interfaces": {
+              "interface": [
+                {
+                  "name": "GigabitEthernet2",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "enabled": true,
+                    "name": "GigabitEthernet2",
+                    "description": "some new text updated for Eumel"
+                  }
+                },
+                {
+                  "name": "GigabitEthernet1",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "name": "GigabitEthernet1",
+                    "enabled": true,
+		    "description": "some new test here"
+                  },
+                  "subinterfaces": {
+                    "subinterface": [
+                      {
+                        "index": 0,
+                        "frinx-openconfig-if-ip:ipv4": {
+                          "addresses": {
+                            "address": [
+                              {
+                                "ip": "192.168.56.131",
+                                "config": {
+                                  "ip": "192.168.56.131",
+                                  "prefix-length": 24
+                                }
+                              }
+                            ]
                           }
-                        ]
+                        }
                       }
-                    }
+                    ]
                   }
-                ]
-              }
-            },
-            {
-              "name": "GigabitEthernet3",
-              "config": {
-                "type": "iana-if-type:ethernetCsmacd",
-                "name": "GigabitEthernet3",
-                "enabled": true
-              }
-            },
-            {
-              "name": "Loopback888",
-              "config": {
-                "type": "iana-if-type:softwareLoopback",
-                "name": "Loopback888",
-                "enabled": true
-              },
-              "subinterfaces": {
-                "subinterface": [
-                  {
-                    "index": 0,
-                    "frinx-openconfig-if-ip:ipv4": {
-                      "addresses": {
-                        "address": [
-                          {
-                            "ip": "8.8.8.8",
-                            "config": {
-                              "ip": "8.8.8.8",
-                              "prefix-length": 32
-                            }
+                },
+                {
+                  "name": "GigabitEthernet4",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "name": "GigabitEthernet4",
+                    "enabled": true
+                  },
+                  "subinterfaces": {
+                    "subinterface": [
+                      {
+                        "index": 0,
+                        "frinx-openconfig-if-ip:ipv4": {
+                          "addresses": {
+                            "address": [
+                              {
+                                "ip": "192.168.1.131",
+                                "config": {
+                                  "ip": "192.168.1.131",
+                                  "prefix-length": 24
+                                }
+                              }
+                            ]
                           }
-                        ]
+                        }
                       }
-                    }
+                    ]
                   }
-                ]
-              }
-            },
-            {
-              "name": "Loopback97",
-              "config": {
-                "type": "iana-if-type:softwareLoopback",
-                "enabled": true,
-                "name": "Loopback97",
-                "description": "null"
-              },
-              "subinterfaces": {
-                "subinterface": [
-                  {
-                    "index": 0,
-                    "frinx-openconfig-if-ip:ipv4": {
-                      "addresses": {
-                        "address": [
-                          {
-                            "ip": "99.99.99.9",
-                            "config": {
-                              "ip": "99.99.99.9",
-                              "prefix-length": 31
-                            }
+                },
+                {
+                  "name": "GigabitEthernet3",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "name": "GigabitEthernet3",
+                    "enabled": true
+                  }
+                },
+                {
+                  "name": "Loopback97",
+                  "config": {
+                    "type": "iana-if-type:softwareLoopback",
+                    "enabled": true,
+                    "name": "Loopback97",
+                    "description": "null"
+                  },
+                  "subinterfaces": {
+                    "subinterface": [
+                      {
+                        "index": 0,
+                        "frinx-openconfig-if-ip:ipv4": {
+                          "addresses": {
+                            "address": [
+                              {
+                                "ip": "99.99.99.9",
+                                "config": {
+                                  "ip": "99.99.99.9",
+                                  "prefix-length": 31
+                                }
+                              }
+                            ]
                           }
-                        ]
+                        }
                       }
-                    }
+                    ]
                   }
-                ]
-              }
+                }
+              ]
             }
-          ]
+          }
+        },
+        {
+          "node-id": "IOS02",
+          "frinx-uniconfig-topology:configuration": {
+            "frinx-openconfig-network-instance:network-instances": {
+              "network-instance": [
+                {
+                  "name": "ab",
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "ab",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "ab"
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:BGP",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:BGP",
+                          "name": "default"
+                        },
+                        "bgp": {
+                          "global": {
+                            "config": {
+                              "as": 65000
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "config": {
+                    "route-distinguisher": "22:1",
+                    "name": "ab",
+                    "type": "frinx-openconfig-network-instance-types:L3VRF"
+                  }
+                },
+                {
+                  "name": "cus1_vpn1",
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:BGP",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:BGP",
+                          "name": "default"
+                        },
+                        "bgp": {
+                          "global": {
+                            "config": {
+                              "as": 65000
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "cus1_vpn1",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "cus1_vpn1"
+                        }
+                      }
+                    ]
+                  },
+                  "config": {
+                    "name": "cus1_vpn1",
+                    "type": "frinx-openconfig-network-instance-types:L3VRF"
+                  }
+                },
+                {
+                  "name": "1",
+                  "config": {
+                    "name": "1",
+                    "type": "frinx-openconfig-network-instance-types:L2VSI"
+                  },
+                  "connection-points": {
+                    "connection-point": [
+                      {
+                        "connection-point-id": "remote",
+                        "endpoints": {
+                          "endpoint": [
+                            {
+                              "endpoint-id": "default",
+                              "config": {
+                                "precedence": 0,
+                                "endpoint-id": "default",
+                                "type": "frinx-openconfig-network-instance-types:REMOTE"
+                              },
+                              "remote": {
+                                "config": {
+                                  "virtual-circuit-identifier": 44
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "config": {
+                          "connection-point-id": "remote"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "default",
+                  "interfaces": {
+                    "interface": [
+                      {
+                        "id": "Loopback0"
+                      },
+                      {
+                        "id": "Loopback1"
+                      },
+                      {
+                        "id": "GigabitEthernet3"
+                      },
+                      {
+                        "id": "Loopback44"
+                      },
+                      {
+                        "id": "GigabitEthernet1"
+                      },
+                      {
+                        "id": "GigabitEthernet2"
+                      }
+                    ]
+                  },
+                  "config": {
+                    "name": "default",
+                    "type": "frinx-openconfig-network-instance-types:DEFAULT_INSTANCE"
+                  },
+                  "protocols": {
+                    "protocol": [
+                      {
+                        "identifier": "frinx-openconfig-policy-types:STATIC",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:STATIC",
+                          "name": "default"
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:OSPF",
+                        "name": "1",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:OSPF",
+                          "name": "1"
+                        }
+                      },
+                      {
+                        "identifier": "frinx-openconfig-policy-types:BGP",
+                        "name": "default",
+                        "config": {
+                          "identifier": "frinx-openconfig-policy-types:BGP",
+                          "name": "default"
+                        },
+                        "bgp": {
+                          "global": {
+                            "afi-safis": {
+                              "afi-safi": [
+                                {
+                                  "afi-safi-name": "frinx-openconfig-bgp-types:L3VPN_IPV4_UNICAST",
+                                  "config": {
+                                    "afi-safi-name": "frinx-openconfig-bgp-types:L3VPN_IPV4_UNICAST"
+                                  }
+                                }
+                              ]
+                            },
+                            "config": {
+                              "as": 65000
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "frinx-openconfig-interfaces:interfaces": {
+              "interface": [
+                {
+                  "name": "GigabitEthernet2",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "enabled": true,
+                    "name": "GigabitEthernet2",
+                    "description": "null"
+                  },
+                  "subinterfaces": {
+                    "subinterface": [
+                      {
+                        "index": 0,
+                        "frinx-openconfig-if-ip:ipv6": {
+                          "addresses": {
+                            "address": [
+                              {
+                                "ip": "3::2",
+                                "config": {
+                                  "ip": "3::2",
+                                  "prefix-length": 21
+                                }
+                              },
+                              {
+                                "ip": "2::2",
+                                "config": {
+                                  "ip": "2::2",
+                                  "prefix-length": 111
+                                }
+                              },
+                              {
+                                "ip": "FE80::5",
+                                "config": {
+                                  "ip": "FE80::5",
+                                  "prefix-length": 64
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "GigabitEthernet1",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "name": "GigabitEthernet1",
+                    "enabled": true
+                  }
+                },
+                {
+                  "name": "GigabitEthernet3",
+                  "config": {
+                    "type": "iana-if-type:ethernetCsmacd",
+                    "enabled": true,
+                    "name": "GigabitEthernet3",
+                    "description": "foo"
+                  }
+                },
+                {
+                  "name": "Loopback1",
+                  "config": {
+                    "type": "iana-if-type:softwareLoopback",
+                    "name": "Loopback1",
+                    "enabled": true
+                  }
+                },
+                {
+                  "name": "Loopback0",
+                  "config": {
+                    "type": "iana-if-type:softwareLoopback",
+                    "name": "Loopback0",
+                    "enabled": true
+                  }
+                },
+                {
+                  "name": "Loopback44",
+                  "config": {
+                    "type": "iana-if-type:softwareLoopback",
+                    "name": "Loopback44",
+                    "enabled": true
+                  }
+                }
+              ]
+            }
+          }
         }
-      }
+      ]
     }
   ]
 }

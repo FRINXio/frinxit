@@ -597,7 +597,7 @@ vorpal
     self = this;
 
     if (typeof args.name == 'undefined' ) 
-      { args.name = "uni_config.cfg"; }
+      { args.name = FILENAME_CONFIG; }
 
     var cliPath = path.join(__dirname, '.', FOLDER_NAME, args.name);
 
