@@ -3,13 +3,20 @@ var cli = require('./frinxit.js');
 var xml2jsParser = require('superagent-xml2jsparser');
 var fs = require('fs');
 var path = require('path');
-
+const url = require('./URL_const');
 
 const FILENAME_CONFIG = "uni_config.json";
 const FILENAME_OPERATIONAL = "uni_operational.json";
 const FOLDER_NAME = "config-data";
 const KNOWN_TOPOLOGIES = ['cli', 'topology-netconf', 'uniconfig']; // required to identify the snapshots we define which 
                                                                    //topologies are not snapshots and show the rest
+
+
+const ODL_UNICONFIG_SYNC_FROM_NETWORK = url.ODL_URL_BASE + 
+                        global.odl_ip + 
+                        url.ODL_PORT +
+                        url.ODL_RESTCONF_OPERATIONS +
+                        'uniconfig-manager:sync-from-network';
 
 
 module.exports = function (vorpal) {
@@ -20,18 +27,20 @@ module.exports = function (vorpal) {
 vorpal
       .command('exec uniconfig sync-from-network <node_id>')
       .description('Updates the operational data store with the current configuration of the device <node_id>. \
-If you want to sync multiple nodes from the network to the operational data store type: \"exec uniconfig sync-from-network \"IOS01, IOS02\"')
+If you want to sync multiple nodes from the network to the operational data store type:\
+ \"exec uniconfig sync-from-network \"IOS01, IOS02\"')
       .action(function(args, callback) {
         var self = this;
 
         if (typeof args.node_id == 'undefined' ){
           var node_id = "";
+
         } else {
           var node_id = 'node: [' + args.node_id + ']';
         }
 
       request
-        .post('http://' + global.odl_ip + ':8181/restconf/operations/uniconfig-manager:sync-from-network')
+        .post(ODL_UNICONFIG_SYNC_FROM_NETWORK)
         .auth(global.odl_user, global.odl_pass)
         .accept('application/json')
         .set('Content-Type', 'application/JSON')
