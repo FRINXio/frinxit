@@ -1,17 +1,17 @@
 
 var vorpal = require('vorpal')();
 var request = require('superagent');
+var credentials = require('./credentials.js')
 const less = require('vorpal-less');
 const grep = require('vorpal-grep');
 const url = require('./URL_const');
 
-var current_delimiter = 'frinxit';
+var current_delimiter = url.DEFAULT_DELIMITER;
 
-global.odl_ip = '127.0.0.1';
-global.odl_user = "admin";
-global.odl_pass = "admin";
+var creds = new credentials();
 
-exports.rpad;
+module.exports.rpad;
+module.exports.creds = creds;
 module.exports.responsecodehandler = responsecodehandler;
 
 // FRINXIT will read an environmnent variable "odl_target" from its host and if it is set 
@@ -20,19 +20,19 @@ module.exports.responsecodehandler = responsecodehandler;
 // The user can change the host address at any time by using the "logon odl" command.
 
 if (process.env.odl_target){    
-  global.odl_ip = process.env.odl_target;
+  //global.odl_ip = process.env.odl_target;
+  creds.setOdlIp(process.env.odl_target)
 };
 
-
 const ODL_TOPOLOGIES = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        creds.getOdlIp() + 
                         url.ODL_PORT + 
                         url.ODL_RESTCONF_OPERATIONAL + 
                         'network-topology:network-topology';
 
 
 const ODL_RESTCONF_TEST = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        creds.getOdlIp() + 
                         url.ODL_PORT + 
                         'restconf/modules';
 
@@ -59,8 +59,7 @@ vorpal
     var self = this;
     this.log('Connecting to ' + args.node_name);
     current_delimiter = args.node_name;
-    global.odl_ip = args.node_name;
-    global.test_ip = args.node_name;
+    creds.setOdlIp(args.node_name)
     this.delimiter('<' + current_delimiter + '>$');
     this.prompt([
       {
@@ -75,9 +74,9 @@ vorpal
       }
       ], function (answers) {
 
-        if (answers.username) {
-          global.odl_user = answers.username;
-          global.odl_pass = answers.password;
+        if (answers.username && answers.password) {
+          creds.setOdlUser(answers.username)
+          creds.setOdlPassword(answers.password)
         }
       callback();
     });
@@ -89,11 +88,11 @@ vorpal
   .description('Discconnects from an ODL node.')
   .alias('logo')
   .action(function(args, callback) {
-    global.odl_ip = '';
-    global.odl_user = '';
-    global.odl_pass = '';
-    current_delimiter = 'frinxit';
-    vorpal.delimiter('frinxit$').show();
+    creds.setOdlIp('')
+    creds.setOdlUser('')
+    creds.setOdlPassword('')    
+    current_delimiter = url.DEFAULT_DELIMITER
+    vorpal.delimiter(url.DEFAULT_DELIMITER + '$').show();
     callback();
   });
 
@@ -106,12 +105,13 @@ vorpal
     var self = this;
     request
       .get(ODL_RESTCONF_TEST)
-      .auth(global.odl_user, global.odl_pass)
+      .auth(creds.getOdlUser(), creds.getOdlPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
           self.log(responsecodehandler(err, res, false));
       });
+
     callback();
   });
 
@@ -126,10 +126,9 @@ vorpal
     if (args.depth) {
       depth = "?depth=" + args.depth;
     }
-
     request
       .get(ODL_TOPOLOGIES + depth)
-      .auth(global.odl_user, global.odl_pass)
+      .auth(creds.getOdlUser(), creds.getOdlPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -142,12 +141,13 @@ vorpal
 // remove the built-in vorpal exit command so we can define it for our 
 // purposes. When in a context leave that context, when at the top level
 // close the application
+
 const exit = vorpal.find('exit');
 
-  if (exit) { 
-    exit
-    .remove();
-  }
+if (exit) { 
+  exit
+  .remove();
+}
 
 vorpal
   .command('exit')
@@ -155,14 +155,14 @@ vorpal
 	.description('Exits current mode or application.')
 	.action(function (args, callback) {
 
-      if (current_delimiter == 'frinxit'){
+      if (current_delimiter == 'frinxit') {
         args.options = args.options || {};
         args.options.sessionId = this.session.id;
         this.parent.exit(args.options);
       }
       else {
-        current_delimiter = 'frinxit';
-        vorpal.delimiter('frinxit$').show();
+        current_delimiter = url.DEFAULT_DELIMITER
+        vorpal.delimiter(url.DEFAULT_DELIMITER + '$').show();
         callback();
       }
 	});
@@ -170,6 +170,7 @@ vorpal
 
 // provide padding function to all modules to display items with equal character distance
 // e.g. cli tabs 
+
 String.prototype.rpad || (String.prototype.rpad = function (length, pad) {
 
     if (length < this.length) return this;
@@ -177,18 +178,17 @@ String.prototype.rpad || (String.prototype.rpad = function (length, pad) {
     pad = pad || ' ';
     str = this;
 
-    while( str.length < length )
-    {
+    while(str.length < length) {
       str += pad;
     }
-
     return str.substr( 0, length );
 });
 
 
+// provide http response handler to all functions and commands in frinxit 
 
 function responsecodehandler (err, res, displayResponse) {
-
+  
   try {
 
     if (err || !res.ok) {
@@ -207,8 +207,8 @@ function responsecodehandler (err, res, displayResponse) {
     else {
       return 'Response code: ' + res.status;
     }
-    
-  } catch(err) {
+  } 
+  catch (err) {
     return 'Service not available.'.red
   }
 }

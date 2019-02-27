@@ -1,33 +1,46 @@
 var request = require('superagent');
-var admin = require('./frinxit.js');
+var frinxit = require('./frinxit.js');
 const url = require('./URL_const');
 
 
 const ODL_VERSION = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        frinxit.creds.getOdlIp() + 
                         url.ODL_PORT + 
                         url.ODL_RESTCONF_OPERATIONS + 
                         'installer:show-version';
 
 const ODL_FEATURES = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        frinxit.creds.getOdlIp() + 
                         url.ODL_PORT + 
                         url.ODL_RESTCONF_OPERATIONAL + 
                         'installer:features';
 
 const ODL_MONITOR_RESOURCES = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        frinxit.creds.getOdlIp() + 
                         url.ODL_PORT + 
                         url.ODL_RESTCONF_OPERATIONS + 
                         'installer:monitor-resources';
 
 const ODL_YANG_MODULES = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        frinxit.creds.getOdlIp() + 
                         url.ODL_PORT + 
                         'restconf/modules';
 
 
 module.exports = function (vorpal) {
+
+  vorpal
+    .command('show credentials')
+    .description('show credentials.')
+    .action(function(args, callback) {
+      var self = this;
+      self.log(frinxit.creds.getOdlIp())
+      self.log(frinxit.creds.getOdlUser())
+      self.log(frinxit.creds.getOdlPassword())
+      callback();
+    });
+
+
   vorpal
     .command('show odl version')
     .description('Display the version of the FRINX ODL Distribution.')
@@ -35,11 +48,11 @@ module.exports = function (vorpal) {
       var self = this;
       request
         .post(ODL_VERSION)
-        .auth(global.odl_user, global.odl_pass)
+        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
         .accept('application/json')
         .set('Content-Type', 'application/yang.data+json')
         .end(function (err, res) {
-          self.log(admin.responsecodehandler(err, res, true));
+          self.log(frinxit.responsecodehandler(err, res, true));
         });
         callback();
     });
@@ -53,10 +66,10 @@ module.exports = function (vorpal) {
       var installed = false;
       request
         .get(ODL_FEATURES)
-        .auth(global.odl_user, global.odl_pass)
+        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
         .end(function (err, res) {
 
-          self.log(admin.responsecodehandler(err, res, false));
+          self.log(frinxit.responsecodehandler(err, res, false));
 
           if (typeof args.options.installed == 'undefined' ) 
             { 
@@ -99,9 +112,9 @@ vorpal
     var self = this;
     request
       .post(ODL_MONITOR_RESOURCES)
-      .auth(global.odl_user, global.odl_pass)
+      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
       .end(function (err, res) {
-        self.log(admin.responsecodehandler(err, res, true));
+        self.log(frinxit.responsecodehandler(err, res, true));
       });
     callback();
   });  
@@ -114,11 +127,11 @@ vorpal
     var self = this;
     request
       .get(ODL_YANG_MODULES)
-      .auth(global.odl_user, global.odl_pass)
+      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
-        self.log(admin.responsecodehandler(err, res, true));
+        self.log(frinxit.responsecodehandler(err, res, true));
       });
     callback();
   });

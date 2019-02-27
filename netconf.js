@@ -1,21 +1,22 @@
 var request = require('superagent');
 const url = require('./URL_const');
+var frinxit = require('./frinxit.js');
 
 
 const ODL_NETCONF_OPERATIONAL = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        frinxit.creds.getOdlIp() +
                         url.ODL_PORT + 
                         url.ODL_RESTCONF_OPERATIONAL + 
                         'network-topology:network-topology/topology/topology-netconf/';
 
 const ODL_NETCONF_CONFIG = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        frinxit.creds.getOdlIp() +
                         url.ODL_PORT +
                         url.ODL_RESTCONF_CONFIG +
                         'network-topology:network-topology/topology/topology-netconf/';
 
 const ODL_RESTCONF_TEST = url.ODL_URL_BASE + 
-                        global.odl_ip + 
+                        frinxit.creds.getOdlIp() + 
                         url.ODL_PORT +
                         'restconf/'
 
@@ -29,23 +30,11 @@ vorpal
     var self = this;
     request
       .delete(ODL_NETCONF_CONFIG + 'node/' + args.node_id)
-      .auth(global.odl_user, global.odl_pass)
+      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
-
       .end(function (err, res) {
-        if (err || !res.ok) {
-          self.log('Device was not found in the data store. Error code: ' + err.status);
-        } 
-
-        if (res.status == 200) {
-          self.log('Device was successfully deleted from the data store. Status code: ' + res.status);
-        }
-
-        if (res.text) {
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-        }
-
+        self.log(frinxit.responsecodehandler(err, res, true));
       });
     callback();
   });
@@ -58,7 +47,6 @@ vorpal
   .description('Mounts a new netconf node in ODL. Requires node-id, port, ' + 
     'username and password of the netconf device, tcp-only and keepalive ' +
     'options can be set via options.')
-
   .action(function(args, callback) {
     var self = this;
     var tcp_only = false;
@@ -67,21 +55,21 @@ vorpal
     //hack default settings for options
     if (typeof args.options.tcp_only == 'undefined' ) { 
       tcp_only = false;
-
-    } else { 
+    } 
+    else { 
       tcp_only = true; 
-    };
+    }
 
     if (typeof args.options.keepalive_delay == 'undefined' ) { 
       keepalive_delay = 0 
-
-    } else { 
+    } 
+    else { 
       keepalive_delay = args.options.keepalive_delay; 
-    };
+    }
 
     request
       .put(ODL_NETCONF_CONFIG + 'node/' + args.node_id)
-      .auth(global.odl_user, global.odl_pass)
+      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
       .accept('application/xml')
       .set('Content-Type', 'application/xml')
       .send('<node xmlns="urn:TBD:params:xml:ns:yang:network-topology"><node-id>' + args.node_id + '</node-id>' +
@@ -92,22 +80,7 @@ vorpal
         '<tcp-only xmlns="urn:opendaylight:netconf-node-topology">' + tcp_only+ '</tcp-only>' + 
         '<keepalive-delay xmlns="urn:opendaylight:netconf-node-topology">' + keepalive_delay + '</keepalive-delay></node>')
       .end(function (err, res) {
-        if (err || !res.ok) {
-          self.log('Mount attempt was unsuccessful. Error code: ' + err.status);
-        } 
-
-        if (res.status == 200) {
-          self.log('Device was successfully mmodified or overwritten in the data store. Status code: ' + res.status);
-        }       
-
-        if (res.status == 201) {
-          self.log('Device was successfully created and mounted in the data store. Status code: ' + res.status);
-        }
-
-        if (res.text) {
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-        }
-
+        self.log(frinxit.responsecodehandler(err, res, true));
       });
     callback();
   });
@@ -129,22 +102,11 @@ vorpal
 
     request
       .get(ODL_NETCONF_CONFIG + node_string)
-      .auth(global.odl_user, global.odl_pass)
+      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
-
       .end(function (err, res) {
-
-        if (err || !res.ok) {
-          self.log('Device was not found in data store. Error code: ' + err.status);
-        }
-
-        if (res.status == 200) {
-          self.log('Device was found in data store. Status code: ' + res.status);
-        }
-
-        self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-
+        self.log(frinxit.responsecodehandler(err, res, true));
       });
       callback();
   });
@@ -160,40 +122,26 @@ vorpal
     if (args.node_id) {
       request
         .get(ODL_NETCONF_OPERATIONAL + 'node/' + args.node_id)
-        .auth(global.odl_user, global.odl_pass)
+        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
-
-          if (err || !res.ok) {
-            self.log('Device was not found in data store. Error code: ' + err.status);
-          } 
-
-          if (res.status == 200) {
-            self.log('Device was found in data store. Status code: ' + res.status);
-          }
-
-          self.log(JSON.stringify(JSON.parse(res.text), null, 2));
-
+          self.log(frinxit.responsecodehandler(err, res, true));
         });
 
     } else {
       request
         .get(ODL_NETCONF_OPERATIONAL)
-        .auth(global.odl_user, global.odl_pass)
+        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
-
-          if (err || !res.ok) {
-            self.log('Device was not found in data store. Error code: ' + err.status);
-          } 
+          self.log(frinxit.responsecodehandler(err, res, false));
 
           if (res.status == 200) {
             self.log('Topology was found in data store. Status code: ' + res.status);
             var nc_nodes = JSON.parse(res.text);
             var node_item = '';
-
             self.log("Node ID".rpad(20) + "Host IP".rpad(20) + "Host Status".rpad(20));
 
             try {
@@ -210,7 +158,7 @@ vorpal
               }
             }
             catch (err) {
-              self.log(JSON.stringify(JSON.parse(res.text), null, 2));
+              self.log(frinxit.responsecodehandler(err, res, true));
             }
 
           }
