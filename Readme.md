@@ -59,12 +59,12 @@ frinxit$
 default settings are:
 
 ~~~~
-var odl_ip = '127.0.0.1';
-var odl_user = "admin";
-var odl_pass = "admin";
+const ODL_IP = '127.0.0.1'
+const ODL_USER = 'admin'
+const ODL_PASSWORD = 'admin'
 ~~~~
 
-You can conect to an ODL node with a different IP address like this:
+FRINXIT will read an environmnent variable "odl_target" from its host and if it is set it will use that IP address as a default host address for all REST calls towards ODL. If the env variable does not exist, we will use 127.0.0.1 as default. The user can change the host address at any time by using the "logon" command.
 
 ~~~~
 frinxit$ logon 192.168.1.50
