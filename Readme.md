@@ -56,7 +56,7 @@ frinxit$
 
 ## Getting started with frinxit:
 
-default settings are:
+default settings in "credentials.js" are:
 
 ~~~~
 const ODL_IP = '127.0.0.1'
