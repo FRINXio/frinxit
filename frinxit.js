@@ -155,16 +155,16 @@ vorpal
 	.description('Exits current mode or application.')
 	.action(function (args, callback) {
 
-      if (current_delimiter == 'frinxit') {
-        args.options = args.options || {};
-        args.options.sessionId = this.session.id;
-        this.parent.exit(args.options);
-      }
-      else {
-        current_delimiter = url.DEFAULT_DELIMITER
-        vorpal.delimiter(url.DEFAULT_DELIMITER + '$').show();
-        callback();
-      }
+    if (current_delimiter == 'frinxit') {
+      args.options = args.options || {};
+      args.options.sessionId = this.session.id;
+      this.parent.exit(args.options);
+    }
+    else {
+      current_delimiter = url.DEFAULT_DELIMITER
+      vorpal.delimiter(url.DEFAULT_DELIMITER + '$').show();
+      callback();
+    }
 	});
 
 
@@ -173,15 +173,15 @@ vorpal
 
 String.prototype.rpad || (String.prototype.rpad = function (length, pad) {
 
-    if (length < this.length) return this;
+  if (length < this.length) return this;
 
-    pad = pad || ' ';
-    str = this;
+  pad = pad || ' ';
+  str = this;
 
-    while(str.length < length) {
-      str += pad;
-    }
-    return str.substr( 0, length );
+  while(str.length < length) {
+    str += pad;
+  }
+  return str.substr( 0, length );
 });
 
 
