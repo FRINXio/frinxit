@@ -1,4 +1,3 @@
-
 var vorpal = require('vorpal')();
 var request = require('superagent');
 var credentials = require('./credentials.js')
@@ -20,7 +19,6 @@ module.exports.responsecodehandler = responsecodehandler;
 // The user can change the host address at any time by using the "logon odl" command.
 
 if (process.env.odl_target){    
-  //global.odl_ip = process.env.odl_target;
   creds.setOdlIp(process.env.odl_target)
 };
 
