@@ -1,30 +1,30 @@
-const ODL_IP = '127.0.0.1'
-const ODL_USER = 'admin'
-const ODL_PASSWORD = 'admin'
+const UC_IP = '127.0.0.1'
+const UC_USER = 'admin'
+const UC_PASSWORD = 'admin'
 
 
 module.exports = function () {
-	this.odlIp = ODL_IP;
-	this.odlUser = ODL_USER;
-	this.odlPassword = ODL_PASSWORD;
+	this.ucIp = UC_IP;
+	this.ucUser = UC_USER;
+	this.ucPassword = UC_PASSWORD;
 
-	this.setOdlIp = function (odlIp) {
-		this.odlIp = odlIp;
+	this.setUcIp = function (ucIp) {
+		this.ucIp = ucIp;
 	} 
-	this.setOdlUser = function (odlUser) {
-		this.odlUser = odlUser;
+	this.setUcUser = function (ucUser) {
+		this.ucUser = ucUser;
 	}     
-	this.setOdlPassword = function (odlPassword) {
-		this.odlPassword = odlPassword;
+	this.setUcPassword = function (ucPassword) {
+		this.ucPassword = ucPassword;
 	} 
 
-	this.getOdlIp = function () { 
-	    return this.odlIp;
+	this.getUcIp = function () { 
+	    return this.ucIp;
 	}
-	this.getOdlUser = function () { 
-	    return this.odlUser;
+	this.getUcUser = function () { 
+	    return this.ucUser;
 	}
-	this.getOdlPassword = function () { 
-	    return this.odlPassword;
+	this.getUcPassword = function () { 
+	    return this.ucPassword;
 	}    
 }

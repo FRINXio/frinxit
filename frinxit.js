@@ -1,5 +1,6 @@
 var vorpal = require('vorpal')();
 var request = require('superagent');
+var colors = require('colors');
 var credentials = require('./credentials.js')
 const less = require('vorpal-less');
 const grep = require('vorpal-grep');
@@ -13,37 +14,37 @@ module.exports.rpad;
 module.exports.creds = creds;
 module.exports.responsecodehandler = responsecodehandler;
 
-// FRINXIT will read an environmnent variable "odl_target" from its host and if it is set 
+// FRINXIT will read an environmnent variable "uc_target" from its host and if it is set 
 // it will use that IP address as a default host address for all REST calls towards ODL.
 // If the env variable does not exist, we will use 127.0.0.1 as default. 
 // The user can change the host address at any time by using the "logon odl" command.
 
-if (process.env.odl_target){    
-  creds.setOdlIp(process.env.odl_target)
+if (process.env.uc_target){    
+  creds.setUcIp(process.env.uc_target)
 };
 
-const ODL_TOPOLOGIES = url.ODL_URL_BASE + 
-                        creds.getOdlIp() + 
-                        url.ODL_PORT + 
-                        url.ODL_RESTCONF_OPERATIONAL + 
+const UC_TOPOLOGIES = url.UC_URL_BASE + 
+                        creds.getUcIp() + 
+                        url.UC_PORT + 
+                        url.UC_RESTCONF_OPERATIONAL + 
                         'network-topology:network-topology';
 
 
-const ODL_RESTCONF_TEST = url.ODL_URL_BASE + 
-                        creds.getOdlIp() + 
-                        url.ODL_PORT + 
-                        'restconf/modules';
+const UC_RESTCONF_TEST = url.UC_URL_BASE + 
+                        creds.getUcIp() + 
+                        url.UC_PORT + 
+                        'rests/data/snapshot-manager:snapshots-metadata';
 
 
 vorpal
   .delimiter('frinxit$')
-  .use(require('./routing.js'))
-  .use(require('./cluster.js'))
-  .use(require('./southbound_cli.js'))
-  .use(require('./netconf.js'))
+//  .use(require('./routing.js'))
+//  .use(require('./cluster.js'))
+//  .use(require('./southbound_cli.js'))
+//  .use(require('./netconf.js'))
   .use(require('./interfaces.js'))
-  .use(require('./uniconfig_manager.js'))
-  .use(require('./admin_01.js'))
+//  .use(require('./uniconfig_manager.js'))
+//  .use(require('./admin_01.js'))
   .use(less)
   .use(grep)
   .show();
@@ -57,7 +58,7 @@ vorpal
     var self = this;
     this.log('Connecting to ' + args.node_name);
     current_delimiter = args.node_name;
-    creds.setOdlIp(args.node_name)
+    creds.setUcIp(args.node_name)
     this.delimiter('<' + current_delimiter + '>$');
     this.prompt([
       {
@@ -73,8 +74,8 @@ vorpal
       ], function (answers) {
 
         if (answers.username && answers.password) {
-          creds.setOdlUser(answers.username)
-          creds.setOdlPassword(answers.password)
+          creds.setUcUser(answers.username)
+          creds.setUcPassword(answers.password)
         }
       callback();
     });
@@ -83,12 +84,12 @@ vorpal
 
 vorpal
   .command('logoff')
-  .description('Discconnects from an ODL node.')
+  .description('Discconnects from UniConfig node.')
   .alias('logo')
   .action(function(args, callback) {
-    creds.setOdlIp('')
-    creds.setOdlUser('')
-    creds.setOdlPassword('')    
+    creds.setUcIp('')
+    creds.setUcUser('')
+    creds.setUcPassword('')    
     current_delimiter = url.DEFAULT_DELIMITER
     vorpal.delimiter(url.DEFAULT_DELIMITER + '$').show();
     callback();
@@ -96,18 +97,16 @@ vorpal
 
 
 vorpal
-  .command('test odl connectivity', 'Tests connectivity to host. \
-  You need to be logged on to an ODL node for the test to succeed. Also see \
-  command "logon"')
+  .command('test uniconfig connectivity', 'Tests connectivity to host. You need to be logged on to a UniConfig node for the test to succeed. Also see command "logon"')
   .action(function(args, callback) {
     var self = this;
     request
-      .get(ODL_RESTCONF_TEST)
-      .auth(creds.getOdlUser(), creds.getOdlPassword())
+      .get(UC_RESTCONF_TEST)
+      .auth(creds.getUcUser(), creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
-          self.log(responsecodehandler(err, res, false));
+          self.log(responsecodehandler(err, res, true));
       });
 
     callback();
@@ -115,8 +114,8 @@ vorpal
 
 
 vorpal
-  .command('show odl topologies [depth]')
-  .description('Display ODL topology information. Specify the depth of the tree that you would like to display with the optional \"depth\" parameter.')
+  .command('show uniconfig topologies [depth]')
+  .description('Display UniConfig topology information. Specify the depth of the tree that you would like to display with the optional \"depth\" parameter.')
   .action(function(args, callback) {
     var self = this;
     var depth = '';
@@ -125,8 +124,8 @@ vorpal
       depth = "?depth=" + args.depth;
     }
     request
-      .get(ODL_TOPOLOGIES + depth)
-      .auth(creds.getOdlUser(), creds.getOdlPassword())
+      .get(UC_TOPOLOGIES + depth)
+      .auth(creds.getUcUser(), creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -190,20 +189,19 @@ function responsecodehandler (err, res, displayResponse) {
   try {
 
     if (err || !res.ok) {
-      return 'Command was unsuccessful. Error code: '.red + err.code;
-    } 
-
+      return 'Command was unsuccessful. Error code: '.red + JSON.stringify(JSON.parse(err.code), null, 2);
+    }
     if (res.status == 200 || 201) {
 
       if (displayResponse && res.text) {
-        return 'Success. Status code: '.green + res.status + '\n' + JSON.stringify(JSON.parse(res.text), null, 2);
+        return 'Success. Status code: '.green + JSON.stringify(JSON.parse(res.status), null, 2) + '\n' + JSON.stringify(JSON.parse(res.text), null, 2);
       } 
       else {
-        return 'Success. Status code: '.green + res.status;
+        return 'Success. Status code: '.green + JSON.stringify(JSON.parse(res.status), null, 2);
       }
     } 
     else {
-      return 'Response code: ' + res.status;
+      return 'Response code: ' + JSON.stringify(JSON.parse(res.status), null, 2);
     }
   } 
   catch (err) {

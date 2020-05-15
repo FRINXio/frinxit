@@ -4,11 +4,11 @@ const util = require('util');
 const url = require('./URL_const');
 
 
-const OC_INTERFCACES = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() +
-                        url.ODL_PORT + 
-                        url.ODL_RESTCONF_OPERATIONAL + 
-                        'network-topology:network-topology/topology/unified/node/';
+const OC_INTERFCACES = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() +
+                        url.UC_PORT + 
+                        url.UC_RESTCONF_OPERATIONAL + 
+                        'network-topology:network-topology/topology=uniconfig/node=';
 
 module.exports = function (vorpal) {
   
@@ -18,8 +18,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get(OC_INTERFCACES + args.node_id + '/yang-ext:mount/frinx-openconfig-interfaces:interfaces')
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .get(OC_INTERFCACES + args.node_id + '/configuration/interfaces?content=nonconfig')
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -38,8 +38,8 @@ vorpal
                 var interface_item = '';
                 var interface_list = {};
 
-                for (var i = 0; i < interfaces['interfaces']['interface'].length; i++) {
-                  interface_item = interfaces['interfaces']['interface'][i];
+                for (var i = 0; i < interfaces['frinx-openconfig-interfaces:interfaces']['interface'].length; i++) {
+                  interface_item = interfaces['frinx-openconfig-interfaces:interfaces']['interface'][i];
 
                   if (interface_item['state']['oper-status'] == "UP") {
                     interface_list[interface_item['name']] = interface_item['state']['oper-status'];
