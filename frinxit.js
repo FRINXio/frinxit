@@ -40,10 +40,10 @@ vorpal
   .delimiter('frinxit$')
 //  .use(require('./routing.js'))
 //  .use(require('./cluster.js'))
-//  .use(require('./southbound_cli.js'))
+  .use(require('./southbound_cli.js'))
 //  .use(require('./netconf.js'))
   .use(require('./interfaces.js'))
-//  .use(require('./uniconfig_manager.js'))
+  .use(require('./uniconfig_manager.js'))
 //  .use(require('./admin_01.js'))
   .use(less)
   .use(grep)
@@ -106,7 +106,7 @@ vorpal
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
-          self.log(responsecodehandler(err, res, true));
+          self.log(responsecodehandler(err, res, false));
       });
 
     callback();

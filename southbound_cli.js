@@ -16,40 +16,40 @@ const KEEPALIVE_DELAY = 55
 const KEEPALIVE_INITIAL_DELAY = 55
 const KEEPALIVE_TIMEOUT = 120
 
-const ODL_TRANSLATE_REGISTRY = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONAL +
+const UC_TRANSLATE_REGISTRY = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONAL +
                         'cli-translate-registry:available-cli-device-translations';
 
-const ODL_CLI_OPERATIONAL = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONAL +
+const UC_CLI_OPERATIONAL = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONAL +
+                        'network-topology:network-topology/topology=cli';
+
+const UC_CLI_CONFIG = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_CONFIG +
                         'network-topology:network-topology/topology/cli/';
 
-const ODL_CLI_CONFIG = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_CONFIG +
+const UC_CLI_OPERATIONS = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'network-topology:network-topology/topology/cli/';
 
-const ODL_CLI_OPERATIONS = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
-                        'network-topology:network-topology/topology/cli/';
-
-const ODL_CLI_DRYRUN_OPERATIONS = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_CLI_DRYRUN_OPERATIONS = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'network-topology:network-topology/topology/cli-dryrun/';                        
 
-const ODL_CLI_DRYRUN_CONFIG = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_CONFIG +
+const UC_CLI_DRYRUN_CONFIG = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_CONFIG +
                         'network-topology:network-topology/topology/cli-dryrun/';      
 
 
@@ -62,8 +62,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get(ODL_TRANSLATE_REGISTRY)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .get(UC_TRANSLATE_REGISTRY)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -84,8 +84,8 @@ Optionally specify a node ID for detailed information about that node.')
 
     if (typeof args.node_id == 'undefined' ) {
       request
-        .get(ODL_CLI_OPERATIONAL)
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .get(UC_CLI_OPERATIONAL)
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -128,8 +128,8 @@ Optionally specify a node ID for detailed information about that node.')
     else { 
       node_id = "node/" + args.node_id;
       request
-        .get(ODL_CLI_OPERATIONAL + node_id)
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .get(UC_CLI_OPERATIONAL + node_id)
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -155,8 +155,8 @@ vorpal
       }
 
       request
-        .get(ODL_CLI_CONFIG + node_id)
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .get(UC_CLI_CONFIG + node_id)
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -216,8 +216,8 @@ vorpal
     }
 
     request
-      .put(ODL_CLI_CONFIG + 'node/' + args.node_id)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .put(UC_CLI_CONFIG + 'node/' + args.node_id)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .send('{\
@@ -251,8 +251,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .delete(ODL_CLI_CONFIG + 'node/' + args.node_id)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .delete(UC_CLI_CONFIG + 'node/' + args.node_id)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -268,8 +268,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .get(ODL_CLI_OPERATIONAL + 'node/' + args.node_id + '/yang-ext:mount/frinx-openconfig-platform:components')
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .get(UC_CLI_OPERATIONAL + 'node/' + args.node_id + '/yang-ext:mount/frinx-openconfig-platform:components')
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -285,8 +285,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .post(ODL_CLI_OPERATIONS + 'node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_CLI_OPERATIONS + 'node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -310,8 +310,8 @@ vorpal
     .action(function(args, callback) {
       var self = this;
       request
-        .post(ODL_CLI_DRYRUN_OPERATIONS + 'node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .post(UC_CLI_DRYRUN_OPERATIONS + 'node/' + args.node_id + '/yang-ext:mount/journal:read-journal')
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -341,8 +341,8 @@ vorpal
       message: 'command: '
     }], function(answers) {
       request
-        .post(ODL_CLI_OPERATIONS + 'node/' + args.node_id + '/yang-ext:mount/cli-unit-generic:execute-and-read')
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .post(UC_CLI_OPERATIONS + 'node/' + args.node_id + '/yang-ext:mount/cli-unit-generic:execute-and-read')
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .send({ "input" : { "ios-cli:command" : answers.command }})

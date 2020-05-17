@@ -11,70 +11,70 @@ const FOLDER_NAME = "config-data";
 const KNOWN_TOPOLOGIES = ['cli', 'topology-netconf', 'uniconfig']; // required to identify the snapshots we define which 
                                                                    //topologies are not snapshots and show the rest
 
-const ODL_UNICONFIG_SYNC_FROM_NETWORK = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_SYNC_FROM_NETWORK = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'uniconfig-manager:sync-from-network';
 
-const ODL_UNICONFIG_REPLACE_CONFIG_WITH_OPER = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_REPLACE_CONFIG_WITH_OPER = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'uniconfig-manager:replace-config-with-operational';
 
-const ODL_UNICONFIG_REPLACE_CONFIG_WITH_SNAP = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_REPLACE_CONFIG_WITH_SNAP = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'uniconfig-manager:replace-config-with-snapshot';
 
-const ODL_UNICONFIG_CALCULATE_DIFF = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_CALCULATE_DIFF = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'uniconfig-manager:calculate-diff';
 
-const ODL_UNICONFIG_COMMIT = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_COMMIT = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'uniconfig-manager:commit';
 
-const ODL_UNICONFIG_DRYRUN_COMMIT = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_DRYRUN_COMMIT = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'dryrun-manager:dryrun-commit';
 
-const ODL_UNICONFIG_CREATE_SNAP = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_CREATE_SNAP = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'snapshot-manager:create-snapshot';
 
-const ODL_UNICONFIG_DELETE_SNAP = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONS +
+const UC_UNICONFIG_DELETE_SNAP = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONS +
                         'snapshot-manager:delete-snapshot';
 
-const ODL_UNICONFIG_TOPOLOGY_CONFIG = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_CONFIG +
-                        'network-topology:network-topology/topology/uniconfig/';
+const UC_UNICONFIG_TOPOLOGY_CONFIG = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_CONFIG +
+                        'network-topology:network-topology/topology=uniconfig/';
 
-const ODL_UNICONFIG_TOPOLOGY_OPERATIONAL = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_OPERATIONAL +
-                        'network-topology:network-topology/topology/uniconfig/';                        
+const UC_UNICONFIG_TOPOLOGY_OPERATIONAL = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_OPERATIONAL +
+                        'network-topology:network-topology/topology=uniconfig/';                        
 
-const ODL_NETWORK_TOPOLOGY = url.ODL_URL_BASE + 
-                        frinxit.creds.getOdlIp() + 
-                        url.ODL_PORT +
-                        url.ODL_RESTCONF_CONFIG +
+const UC_NETWORK_TOPOLOGY = url.UC_URL_BASE + 
+                        frinxit.creds.getUcIp() + 
+                        url.UC_PORT +
+                        url.UC_RESTCONF_CONFIG +
                         'network-topology:network-topology/';
 
 
@@ -99,8 +99,8 @@ vorpal
     }
 
     request
-      .post(ODL_UNICONFIG_SYNC_FROM_NETWORK)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_SYNC_FROM_NETWORK)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/JSON')
       .send('{\
@@ -132,8 +132,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .post(ODL_UNICONFIG_REPLACE_CONFIG_WITH_OPER)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_REPLACE_CONFIG_WITH_OPER)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/JSON')
       .send('{\
@@ -166,8 +166,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .post(ODL_UNICONFIG_REPLACE_CONFIG_WITH_SNAP)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_REPLACE_CONFIG_WITH_SNAP)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/JSON')
       .send('{\
@@ -209,8 +209,8 @@ If you want to commit to a subset of nodes type: \"commit uniconfig \"IOS01, IOS
     }
 
     request
-      .post(ODL_UNICONFIG_COMMIT)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_COMMIT)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/JSON')
       .send('{\
@@ -250,8 +250,8 @@ If you want to commit to a subset of nodes type: \"commit uniconfig dry-run \"IO
     }
 
     request
-      .post(ODL_UNICONFIG_DRYRUN_COMMIT)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_DRYRUN_COMMIT)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/JSON')
       .send('{\
@@ -282,8 +282,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .post(ODL_UNICONFIG_CREATE_SNAP)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_CREATE_SNAP)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/JSON')
       .send('{\
@@ -314,8 +314,8 @@ vorpal
   .action(function(args, callback) {
     var self = this;
     request
-      .post(ODL_UNICONFIG_DELETE_SNAP)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_DELETE_SNAP)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/JSON')
       .send('{\
@@ -346,8 +346,8 @@ vorpal
     }
 
     request
-      .post(ODL_UNICONFIG_CALCULATE_DIFF)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .post(UC_UNICONFIG_CALCULATE_DIFF)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('xml')
       .buffer(true)
       .parse(xml2jsParser)
@@ -428,12 +428,12 @@ vorpal
       args.node_id = ""; 
     }
     else { 
-      node_id = "node/" + args.node_id
+      node_id = "node=" + args.node_id
     }
 
     request
-      .get(ODL_UNICONFIG_TOPOLOGY_CONFIG + node_id)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .get(UC_UNICONFIG_TOPOLOGY_CONFIG + node_id + '/configuration')
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -470,8 +470,8 @@ vorpal
     }
 
     request
-      .get(ODL_UNICONFIG_TOPOLOGY_OPERATIONAL + node_id)
-      .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+      .get(UC_UNICONFIG_TOPOLOGY_OPERATIONAL + node_id)
+      .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
       .accept('application/json')
       .set('Content-Type', 'application/json')
       .end(function (err, res) {
@@ -500,8 +500,8 @@ vorpal
 
     if (args.name == '') {
       request
-        .get(ODL_NETWORK_TOPOLOGY + '?depth=2')
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .get(UC_NETWORK_TOPOLOGY + '?depth=2')
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -528,8 +528,8 @@ vorpal
     }
     else {
       request
-        .get(ODL_NETWORK_TOPOLOGY + 'topology/' + args.name)
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .get(UC_NETWORK_TOPOLOGY + 'topology/' + args.name)
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .end(function (err, res) {
@@ -594,8 +594,8 @@ vorpal
 
     readFile(cliPath).then(function (data){
       request
-        .put(ODL_UNICONFIG_TOPOLOGY_CONFIG)
-        .auth(frinxit.creds.getOdlUser(), frinxit.creds.getOdlPassword())
+        .put(UC_UNICONFIG_TOPOLOGY_CONFIG)
+        .auth(frinxit.creds.getUcUser(), frinxit.creds.getUcPassword())
         .accept('application/json')
         .set('Content-Type', 'application/json')
         .send(data.toString('utf8'))
